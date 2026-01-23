@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/src/@libs/utils/cn";
 import type { FormProps } from "antd";
 import { Button, Col, Form, Input, Row } from "antd";
 import Image from "next/image";
@@ -26,7 +27,9 @@ const page = () => {
       <div className="container">
         <div className="flex justify-between items-center py-10 border-b border-gray-500">
           <h1 className="text-3xl font-semibold">Authentication System</h1>
-          <Link href={"/"}>Back Home</Link>
+          <Link href={"/"} className="text-[#0EC971]! font-semibold">
+            Back Home 
+          </Link>
         </div>
         <div className=" grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
           <div>
@@ -42,7 +45,7 @@ const page = () => {
           </div>
           <div className="max-w-lg mx-auto h-fit bg-[#07140D] p-6! rounded-3xl border border-[#084d2c]">
             <div className="flex justify-between items-center">
-              <div className="mt-6">
+              <div className="my-6">
                 <h1 className="uppercase text-kg font-semibold text-[#084d2c]">
                   Credentials
                 </h1>
@@ -52,19 +55,21 @@ const page = () => {
                     : "Create a new account"}
                 </p>
               </div>
-              <div className="flex justify-center items-center gap-4 bg-[#1B251F] rounded-full p-2">
-                <button
-                  onClick={() => setAuthTab("signIn")}
-                  className={`px-6 py-1 border-2  rounded-3xl ${authTab === "signIn" ? "border-green-500" : "border-gray-500"}`}
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => setAuthTab("signUp")}
-                  className={`px-6 py-1 border-2  rounded-3xl ${authTab === "signUp" ? "border-green-500" : "border-gray-500"}`}
-                >
-                  Sign Up
-                </button>
+              <div className="flex justify-center items-center gap-1 bg-[#1B251F] rounded-full p-1 border border-gray-600">
+                {["signIn", "signUp"].map((tab) => (
+                  <Button
+                    key={tab}
+                    onClick={() => setAuthTab(tab)}
+                    className={cn(
+                      "px-6 py-1 rounded-3xl! border-none!  capitalize duration-300 ease-linear bg-transparent! hover:text-white! font-semibold!",
+                      {
+                        "bg-[#15573C]!": authTab === tab,
+                      },
+                    )}
+                  >
+                    {tab === "signIn" ? "Sign In" : "Sign Up"}
+                  </Button>
+                ))}
               </div>
             </div>
             <Form
@@ -73,7 +78,6 @@ const page = () => {
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off"
-              className=""
               layout="vertical"
             >
               <Row gutter={16}>
