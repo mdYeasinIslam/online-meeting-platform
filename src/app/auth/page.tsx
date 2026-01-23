@@ -5,6 +5,7 @@ import { Button, Col, Form, Input, Row } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { FaArrowRightLong } from "react-icons/fa6";
 interface FieldType {
   username?: string;
   password?: string;
@@ -27,8 +28,8 @@ const page = () => {
       <div className="container">
         <div className="flex justify-between items-center py-10 border-b border-gray-500">
           <h1 className="text-3xl font-semibold">Authentication System</h1>
-          <Link href={"/"} className="text-[#0EC971]! font-semibold">
-            Back Home 
+          <Link href={"/"} className="flex items-center gap-2 text-[#0EC971]! font-semibold hover:underline">
+            <span className="text-lg">Back Home</span> <FaArrowRightLong size={16} />
           </Link>
         </div>
         <div className=" grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
@@ -124,10 +125,10 @@ const page = () => {
                   <Form.Item>
                     <Button
                       type="primary"
-                      className="w-full bg-[#0EC971]! "
+                      className="w-full bg-[#0EC971]! rounded-full! text-lg! font-semibold "
                       htmlType="submit"
                     >
-                      Submit
+                      Create account
                     </Button>
                   </Form.Item>
                 </Col>
