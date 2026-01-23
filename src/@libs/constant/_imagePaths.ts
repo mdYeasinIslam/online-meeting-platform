@@ -1,0 +1,18 @@
+export const ImagePaths = {
+  // logo: '/images/logo/brand_logo_light.svg',
+  logo: '/images/logo/brand-logo.png',
+  smLogo: '/images/logo/sm-logo.png',
+  logoLight: '/images/logo/brand_logo_light(Resize).svg',
+  avatar: '/images/avatar.svg',
+  placeHolder: '/images/placeholder.svg',
+  notFound: '/images/not_found.jpg',
+  fileNotFound: '/images/file_not_found.jpg',
+  upcoming: '/images/upcoming.png',
+  underConstruction: '/images/under_construction.svg',
+  404: '/images/404.svg',
+  defaultProfileCoverPhoto: '/images/workers/profile-cover-photo.png',
+  constructionCoverPhoto: '/images/workers/construction.png',
+  hospitalityCoverPhoto: '/images/workers/hospitality.png',
+  argoCoverPhoto: '/images/workers/agro.png',
+  medicalCoverPhoto: '/images/workers/medical.png',
+};
