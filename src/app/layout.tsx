@@ -3,6 +3,7 @@ import { NextFontWithVariable } from "next/dist/compiled/@next/font";
 import { Poppins } from "next/font/google";
 import Provider from "../@libs/context/Provider";
 import "./globals.css";
+import LandingHeaderUpdated from "../@base/layouts/LandingHeaderUpdated";
 
 export const metadata: Metadata = {
   title: "Lets-Talk",
@@ -18,19 +19,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-   const fontWithMorePropsCreateFn = (
-     fontDefinition: NextFontWithVariable,
-     originalVariableName: string,
-   ) => {
-     return { ...fontDefinition, originalVariableName };
-   };
+  const fontWithMorePropsCreateFn = (
+    fontDefinition: NextFontWithVariable,
+    originalVariableName: string,
+  ) => {
+    return { ...fontDefinition, originalVariableName };
+  };
 
-   const poppinsFont = fontWithMorePropsCreateFn(poppins, "--font-poppins");
+  const poppinsFont = fontWithMorePropsCreateFn(poppins, "--font-poppins");
 
   return (
     <html lang="en">
       <body className="bg-[#060B17] text-white designed_scrollbar ">
-        <Provider nextFont={[poppinsFont]}>{children}</Provider>
+        <Provider nextFont={[poppinsFont]}>
+          <LandingHeaderUpdated />
+          <main>{children}</main>
+        </Provider>
       </body>
     </html>
   );
