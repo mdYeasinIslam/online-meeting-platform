@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-primary-500:#15573C;
 }
 
 @theme inline {
@@ -26,8 +27,10 @@
   /* background: #060B17; */
   /* color: white; */
 }
-.container{
-  
+.container {
   margin: 0 auto;
   padding: 0 16px;
+}
+main  {
+  padding-top: 4rem;
 }

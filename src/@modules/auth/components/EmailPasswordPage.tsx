@@ -5,16 +5,27 @@ import { Button, Col, Form, Input, Row } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { getSupabaseBrowserClient } from "../libs/supabase/browser-client";
-import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 interface FieldType {
   email?: string;
   password?: string;
   remember?: string;
 }
+interface IProps {
+  user: any;
+}
 type AuthTab = "signIn" | "signUp";
-const EmailPasswordPage = () => {
+const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
+  const router = useRouter();
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
   const [authTab, setAuthTab] = useState("signUp");
   const supabase = getSupabaseBrowserClient();
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {

@@ -11,7 +11,8 @@ const page = async () => {
 
   return (
     <>
-    <EmailPasswordPage/></>
+      <EmailPasswordPage user={data.user}/>
+    </>
   )
 }
 

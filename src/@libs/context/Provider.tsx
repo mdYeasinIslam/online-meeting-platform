@@ -28,6 +28,7 @@ const Provider: React.FC<TProps> = ({ nextFont, children }) => {
           },
         }}
       >
+        
         {children}
         <Toaster />
       </ConfigProvider>
