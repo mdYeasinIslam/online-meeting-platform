@@ -12,6 +12,7 @@ import { redirect, usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { BiX } from 'react-icons/bi';
 import { FaHome } from 'react-icons/fa';
+import { IoMdMenu } from 'react-icons/io';
 
 const redirectPath = [
   { url: 'https://wage-employer.vercel.app/auth', panelType: 'employer', panel: 'employers', type: 'login' },
@@ -28,22 +29,18 @@ const navItems = [
   },
 ];
 
-export default async function LandingHeaderUpdated() {
+export default  function LandingHeaderUpdated() {
   const { elemRef: logoHeightRef, height: logoHeight } = useResize<HTMLDivElement>();
   const { elemRef: ctaHeightRef, height: ctaHeight } = useResize<HTMLDivElement>();
   const { elemRef: navItemHeightRef, height: navItemHeight } = useResize<HTMLDivElement>();
   const { height } = useWindowSize();
   const pathName = usePathname();
-  const router = useRouter();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const ref = useRef(null);
-  const checkHomeImigrationPath = pathName === '/' || pathName === '/imigration';
   const [isSolid, setIsSolid] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-    const supabase = await createSupabaseServerClient()
-  const { data:{user}, error } = await supabase.auth.getUser()
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -86,9 +83,7 @@ export default async function LandingHeaderUpdated() {
         <div
           className={cn(
             "w-full fixed top-0 left-0 right-0 transition-all  duration-500 z-50",
-            isSolid
-              ? "bg-white linear-gradient"
-              : "bg-[#032416] ",
+            isSolid ? "bg-white linear-gradient" : "bg-[#032416] ",
             isVisible ? "translate-y-0" : "-translate-y-full",
             {
               "bg-white/50 backdrop-blur-3xl": isMobileMenuOpen && isSolid,
@@ -126,26 +121,26 @@ export default async function LandingHeaderUpdated() {
 
             {/* Desktop Auth Buttons */}
 
-            {/* <div className="hidden md:flex items-center gap-4">
-                <>
-                  <Button
-                    onClick={() => handleRedirectFn('login')}
-                    size="small"
-                    variant="outlined"
-                    className="text-gray-700 text-sm xl:text-base font-semibold border hover:border-(--color-primary-500) hover:text-(--color-primary-900) cursor-pointer px-5 lg:px-8  xl:py-6"
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => handleRedirectFn('sign-up')}
-                    className="bg-white hover:bg-(--color-primary-900) text-sm xl:text-base font-semibold text-[#101828] hover:text-white cursor-pointer  px-5 lg:px-8  xl:py-6"
-                  >
-                    Sign Up
-                  </Button>
-                </>
-              </div> */}
-            <div className="flex justify-center max-lg:w-full items-center gap-1 ">
+            <div className="hidden md:flex items-center gap-4">
+              <>
+                <Button
+                  onClick={handleRedirectFn}
+                  size="small"
+                  variant="outlined"
+                  className="text-gray-700 text-sm xl:text-base font-semibold border hover:border-(--color-primary-500) hover:text-(--color-primary-900) cursor-pointer px-5 lg:px-8  xl:py-6"
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="small"
+                  onClick={handleRedirectFn}
+                  className="bg-white hover:bg-(--color-primary-900) text-sm xl:text-base font-semibold text-[#101828] hover:text-white cursor-pointer  px-5 lg:px-8  xl:py-6"
+                >
+                  Sign Up
+                </Button>
+              </>
+            </div>
+            {/* <div className="flex justify-center max-lg:w-full items-center gap-1 ">
               {["signIn", "signUp"].map((tab) => (
                 <Button
                   key={tab}
@@ -164,22 +159,20 @@ export default async function LandingHeaderUpdated() {
                   {tab}
                 </Button>
               ))}
-            </div>
+            </div> */}
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
-              <Button
-                variant="outlined"
-                size="small"
+              <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="p-2"
+                className="text-white! "
               >
                 {isMobileMenuOpen ? (
-                  <BiX className="h-6 w-6" />
+                  <BiX color="white" className="h-6 w-6 text-white" />
                 ) : (
-                  <Menu className="h-6 w-6" />
+                  <IoMdMenu className="h-6 w-6 text-white" />
                 )}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -187,7 +180,7 @@ export default async function LandingHeaderUpdated() {
         <div
           ref={ref}
           className={cn(
-            "hidden_scrollbar md:hidden w-50 fixed top-0  bg-white duration-300 ease-linear overflow-y-auto border-t rounded-tl-4xl rounded-bl-4xl px-4 py-6 z-50",
+            "hidden_scrollbar md:hidden w-50 fixed top-0  bg-[#15573C] duration-300 ease-linear overflow-y-auto  rounded-tl-4xl rounded-bl-4xl px-4 py-6 z-50",
             isMobileMenuOpen ? "right-0 " : "-right-96",
           )}
           style={{
@@ -203,7 +196,7 @@ export default async function LandingHeaderUpdated() {
           </div>
           <nav
             ref={navItemHeightRef}
-            className="hidden_scrollbar space-y-1 h-51 overflow-y-auto "
+            className="hidden_scrollbar space-y-1 overflow-y-auto "
           >
             <div ref={navItemHeightRef}>
               {navItems?.map((item, idx) => (
@@ -211,9 +204,9 @@ export default async function LandingHeaderUpdated() {
                   key={idx}
                   href={item.href}
                   className={cn(
-                    "flex items-center justify-end gap-3 text-(--color-primary-900) font-medium text-right py-2",
+                    "flex items-center justify-end gap-3 text-white font-medium text-right py-2",
                     {
-                      "text-(--color-primary-500) font-bold ":
+                      " font-bold ":
                         pathName === item.href,
                     },
                   )}
@@ -229,24 +222,25 @@ export default async function LandingHeaderUpdated() {
           </nav>
 
           {/* Mobile Auth Buttons */}
-          <div ref={ctaHeightRef} className="pt-1 border-t space-y-3">
-            {!checkHomeImigrationPath && (
-              <>
-                <Button
-                  onClick={ handleRedirectFn}
-                  variant="outlined"
-                  className="w-full text-gray-700 hover:text-(--color-primary-900) cursor-pointer"
-                >
-                  Sign In
-                </Button>
-                <Button
-                  onClick={() => handleRedirectFn}
-                  className="w-full bg-(--color-primary-500) hover:bg-(--color-primary-900) text-white cursor-pointer"
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
+          <div
+            ref={ctaHeightRef}
+            className="pt-5 border-t border-white space-y-3"
+          >
+            <>
+              <Button
+                onClick={handleRedirectFn}
+                variant="outlined"
+                className="w-full bg-[#012415]! hover:text-white! cursor-pointer"
+              >
+                Sign In
+              </Button>
+              <Button
+                onClick={handleRedirectFn}
+                className="w-full border-2! bg-transparent! border-[#15573C]! hover:text-white! cursor-pointer"
+              >
+                Sign Up
+              </Button>
+            </>
           </div>
           {/* </div> */}
         </div>
