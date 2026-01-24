@@ -3,6 +3,7 @@ import { ConfigProvider, theme } from "antd";
 import { NextFontWithVariable } from "next/dist/compiled/@next/font";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
+import { Toaster } from "react-hot-toast";
 
 const PathGuard = dynamic(() => import("./PathGuard"), {
   ssr: false,
@@ -22,13 +23,13 @@ const Provider: React.FC<TProps> = ({ nextFont, children }) => {
             // Seed Token
             // colorPrimary: "#ffffff",
             // borderRadius: 2,
-
             // Alias Token
             // colorBgContainer: "#f6ffed",
           },
         }}
       >
         {children}
+        <Toaster />
       </ConfigProvider>
     </PathGuard>
   );
