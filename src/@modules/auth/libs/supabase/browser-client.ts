@@ -1,7 +1,6 @@
 'use client'
 import { createBrowserClient } from "@supabase/ssr";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { getEnvironmentVariable } from "./server-client";
 type SupabaseSchema = Record<string, never>;
 
 let client: SupabaseClient<SupabaseSchema> | null = null;
