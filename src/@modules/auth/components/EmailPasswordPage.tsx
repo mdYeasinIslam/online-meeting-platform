@@ -10,24 +10,31 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { getSupabaseBrowserClient } from "../libs/supabase/browser-client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
+import { User } from "@supabase/supabase-js";
 interface FieldType {
   email?: string;
   password?: string;
   remember?: string;
 }
 interface IProps {
-  user: any;
+  user?: any;
 }
-type AuthTab = "signIn" | "signUp";
-const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
+const EmailPasswordPage: React.FC<IProps> = () => {
   const router = useRouter();
+  const [user] = useGlobalState<User | null>({
+    key: "auth-user",
+    initialValue: null,
+  });
   useEffect(() => {
     if (user) {
       router.push("/");
     }
   }, [user, router]);
+
   const [authTab, setAuthTab] = useState("signUp");
   const supabase = getSupabaseBrowserClient();
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!values?.email || !values?.password) return;
     if (authTab === "signUp") {
@@ -38,7 +45,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
       if (error) {
         toast.error(error.message);
       } else {
-       setAuthTab('signIn')
+        setAuthTab("signIn");
         toast.success("Account created successfully");
       }
     } else {
@@ -49,7 +56,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
       if (error) {
         toast.error(error.message);
       } else {
-        router.push('/')
+        router.push("/");
         toast.success("Logged in successfully");
       }
     }
@@ -61,7 +68,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
     console.log("Failed:", errorInfo);
   };
   return (
-    <section className="">
+    <section>
       <div className="container min-h-full">
         <div className="flex justify-between items-center py-10 border-b border-gray-500">
           <h1 className="text-xl md:text-3xl font-semibold">

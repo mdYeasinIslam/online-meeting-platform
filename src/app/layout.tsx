@@ -29,14 +29,11 @@ export default async function RootLayout({
   };
 
   const poppinsFont = fontWithMorePropsCreateFn(poppins, "--font-poppins");
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.getUser();
-
   return (
     <html lang="en">
       <body className="bg-[#060B17] text-white designed_scrollbar ">
         <Provider nextFont={[poppinsFont]}>
-          <AuthInitializer user={data.user} />
+          <AuthInitializer  />
           <LandingHeaderUpdated />
           <main>{children}</main>
         </Provider>

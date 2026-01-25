@@ -1,8 +1,3 @@
-
 export default function Home() {
-  return (
-    <div className="">
-      home page
-    </div>
-  );
+  return <div className="pt-20">home</div>;
 }
