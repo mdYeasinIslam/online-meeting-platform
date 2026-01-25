@@ -1,38 +1,64 @@
-'use client';
+"use client";
 
-import useResize from '@/src/@libs/hooks/useResize';
-import useWindowSize from '@/src/@libs/hooks/useWindowSize';
-import { cn } from '@/src/@libs/utils/cn';
-import { Paths } from '@/src/@libs/utils/paths';
-import { createSupabaseServerClient } from '@/src/@modules/auth/libs/supabase/server-client';
-import { Button, Menu } from 'antd';
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
+import useResize from "@/src/@libs/hooks/useResize";
+import useWindowSize from "@/src/@libs/hooks/useWindowSize";
+import { cn } from "@/src/@libs/utils/cn";
+import { Paths } from "@/src/@libs/utils/paths";
+import { getSupabaseBrowserClient } from "@/src/@modules/auth/libs/supabase/browser-client";
+import { createSupabaseServerClient } from "@/src/@modules/auth/libs/supabase/server-client";
+import { User } from "@supabase/supabase-js";
+import { Button, Menu } from "antd";
 
-import Link from 'next/link';
-import { redirect, usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { BiX } from 'react-icons/bi';
-import { FaHome } from 'react-icons/fa';
-import { IoMdMenu } from 'react-icons/io';
+import Link from "next/link";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { BiX } from "react-icons/bi";
+import { FaHome } from "react-icons/fa";
+import { IoMdMenu } from "react-icons/io";
 
 const redirectPath = [
-  { url: 'https://wage-employer.vercel.app/auth', panelType: 'employer', panel: 'employers', type: 'login' },
-  { url: 'https://wage-employer.vercel.app/auth', panelType: 'employer', panel: 'employers', type: 'sign-up' },
-  { url: 'https://wage-provider.vercel.app/auth', panelType: 'provider', panel: 'providers', type: 'login' },
-  { url: 'https://wage-provider.vercel.app/auth', panelType: 'provider', panel: 'providers', type: 'sign-up' },
+  {
+    url: "https://wage-employer.vercel.app/auth",
+    panelType: "employer",
+    panel: "employers",
+    type: "login",
+  },
+  {
+    url: "https://wage-employer.vercel.app/auth",
+    panelType: "employer",
+    panel: "employers",
+    type: "sign-up",
+  },
+  {
+    url: "https://wage-provider.vercel.app/auth",
+    panelType: "provider",
+    panel: "providers",
+    type: "login",
+  },
+  {
+    url: "https://wage-provider.vercel.app/auth",
+    panelType: "provider",
+    panel: "providers",
+    type: "sign-up",
+  },
 ];
 const navItems = [
   {
     id: 1,
-    label: 'Home',
+    label: "Home",
     href: Paths.root,
     icon: FaHome,
   },
 ];
 
-export default  function LandingHeaderUpdated() {
-  const { elemRef: logoHeightRef, height: logoHeight } = useResize<HTMLDivElement>();
-  const { elemRef: ctaHeightRef, height: ctaHeight } = useResize<HTMLDivElement>();
-  const { elemRef: navItemHeightRef, height: navItemHeight } = useResize<HTMLDivElement>();
+export default function LandingHeaderUpdated() {
+  const { elemRef: logoHeightRef, height: logoHeight } =
+    useResize<HTMLDivElement>();
+  const { elemRef: ctaHeightRef, height: ctaHeight } =
+    useResize<HTMLDivElement>();
+  const { elemRef: navItemHeightRef, height: navItemHeight } =
+    useResize<HTMLDivElement>();
   const { height } = useWindowSize();
   const pathName = usePathname();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,14 +66,18 @@ export default  function LandingHeaderUpdated() {
   const [isSolid, setIsSolid] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [user] = useGlobalState<User | null>({
+    key: "auth-user",
+    initialValue: null,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-    
+
       if (currentScrollY < lastScrollY && currentScrollY === 0) {
         setIsSolid(false);
-        setIsVisible(true)
+        setIsVisible(true);
       } else if (currentScrollY < lastScrollY) {
         // Scrolling UP - show navbar
         setIsSolid(true);
@@ -58,19 +88,25 @@ export default  function LandingHeaderUpdated() {
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY, pathName]);
-  const handleClickOutsideFn = () => {
-    setMobileMenuOpen(false);
+  // const handleClickOutsideFn = () => {
+  //   setMobileMenuOpen(false);
+  // };
+  const handleRedirectFn = async (value: string) => {
+    if (value === "signOut") {
+      const supabase = getSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      redirect("/auth");
+    }
+    redirect("/auth");
   };
-  const handleRedirectFn = () => {
-     redirect('/auth')
- }
   // useClickOutside(ref, handleClickOutsideFn);
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
   }, [isMobileMenuOpen]);
+  if(pathName ==='/auth') return null
   return (
     <div>
       {isMobileMenuOpen && (
@@ -121,7 +157,7 @@ export default  function LandingHeaderUpdated() {
 
             {/* Desktop Auth Buttons */}
 
-            <div className="hidden md:flex items-center gap-4">
+            {/* <div className="hidden md:flex items-center gap-4">
               <>
                 <Button
                   onClick={handleRedirectFn}
@@ -139,27 +175,41 @@ export default  function LandingHeaderUpdated() {
                   Sign Up
                 </Button>
               </>
-            </div>
-            {/* <div className="flex justify-center max-lg:w-full items-center gap-1 ">
-              {["signIn", "signUp"].map((tab) => (
-                <Button
-                  key={tab}
-                  onClick={handleRedirectFn}
-                  className={cn(
-                    "max-lg:w-full px-6 py-1 rounded-lg! border-none!  capitalize duration-300 ease-linear   font-semibold! bg-transparent!  ",
-                    {
-                      "bg-[#15573C]! hover:text-white!": tab === "signIn",
-                      "hover:bg-[#15573C]! hover:text-white!": tab === "signUp",
-                    },
-                    {
-                      "text-[#15573C]! ": isSolid && tab !== 'signIn',
-                    },
-                  )}
-                >
-                  {tab}
-                </Button>
-              ))}
             </div> */}
+            <div className="hidden md:flex justify-center lg:max-lg:w-full items-center gap-1 ">
+              {!user?.email ? (
+                ["signIn", "signUp"].map((tab) => (
+                  <Button
+                    key={tab}
+                    onClick={() => handleRedirectFn("")}
+                    className={cn(
+                      "lg:max-lg:w-full px-6 py-1 rounded-lg! border-none!  capitalize duration-300 ease-linear   font-semibold! bg-transparent!  ",
+                      {
+                        "bg-[#15573C]! hover:text-white!": tab === "signIn",
+                        "hover:bg-[#15573C]! hover:text-white!":
+                          tab === "signUp",
+                      },
+                      {
+                        "text-[#15573C]! ": isSolid && tab !== "signIn",
+                      },
+                    )}
+                  >
+                    {tab}
+                  </Button>
+                ))
+              ) : (
+                <>
+                  <Button
+                    onClick={() => handleRedirectFn("signOut")}
+                    className={cn(
+                      "lg:max-lg:w-full px-6 py-1 rounded-lg! border-none!  capitalize duration-300 ease-linear   font-semibold!  bg-[#15573C]! hover:text-white! ",
+                    )}
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              )}
+            </div>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
@@ -206,8 +256,7 @@ export default  function LandingHeaderUpdated() {
                   className={cn(
                     "flex items-center justify-end gap-3 text-white font-medium text-right py-2",
                     {
-                      " font-bold ":
-                        pathName === item.href,
+                      " font-bold ": pathName === item.href,
                     },
                   )}
                   onClick={() => setMobileMenuOpen(false)}
@@ -228,21 +277,20 @@ export default  function LandingHeaderUpdated() {
           >
             <>
               <Button
-                onClick={handleRedirectFn}
+                onClick={() => handleRedirectFn("")}
                 variant="outlined"
                 className="w-full bg-[#012415]! hover:text-white! cursor-pointer"
               >
                 Sign In
               </Button>
               <Button
-                onClick={handleRedirectFn}
+                onClick={() => handleRedirectFn("")}
                 className="w-full border-2! bg-transparent! border-[#15573C]! hover:text-white! cursor-pointer"
               >
                 Sign Up
               </Button>
             </>
           </div>
-          {/* </div> */}
         </div>
       </header>
     </div>

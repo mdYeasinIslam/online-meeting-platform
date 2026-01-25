@@ -38,6 +38,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
       if (error) {
         toast.error(error.message);
       } else {
+       setAuthTab('signIn')
         toast.success("Account created successfully");
       }
     } else {
@@ -48,6 +49,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
       if (error) {
         toast.error(error.message);
       } else {
+        router.push('/')
         toast.success("Logged in successfully");
       }
     }
