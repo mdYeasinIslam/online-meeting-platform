@@ -26,14 +26,30 @@ const EmailPasswordPage: React.FC<IProps> = () => {
     key: "auth-user",
     initialValue: null,
   });
+  const [authTab, setAuthTab] = useState("signUp");
+  const supabase = getSupabaseBrowserClient();
+  
   useEffect(() => {
     if (user) {
       router.push("/");
     }
   }, [user, router]);
 
-  const [authTab, setAuthTab] = useState("signUp");
-  const supabase = getSupabaseBrowserClient();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "signIn" || tab === "signUp") {
+      setAuthTab(tab);
+    }
+    handleAuthTabChange(tab || "signUp")
+  }, []);
+
+  const handleAuthTabChange = (tab: string) => {
+    setAuthTab(tab);
+    const params = new URLSearchParams();
+    params.set("tab", tab);
+    window.history.pushState(null, "", `?${params.toString()}`);
+  };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!values?.email || !values?.password) return;
@@ -110,7 +126,7 @@ const EmailPasswordPage: React.FC<IProps> = () => {
                 {["signIn", "signUp"].map((tab) => (
                   <Button
                     key={tab}
-                    onClick={() => setAuthTab(tab)}
+                    onClick={() => handleAuthTabChange(tab)}
                     className={cn(
                       "max-lg:w-full px-6 py-1 rounded-3xl! border-none!  capitalize duration-300 ease-linear bg-transparent! hover:text-white! font-semibold!",
                       {
@@ -131,7 +147,7 @@ const EmailPasswordPage: React.FC<IProps> = () => {
               autoComplete="off"
               layout="vertical"
             >
-              <Row>
+              <Row gutter={[16, 16]}>
                 <Col xs={24}>
                   <Form.Item
                     label="Email"
@@ -142,7 +158,7 @@ const EmailPasswordPage: React.FC<IProps> = () => {
                     className=""
                   >
                     <Input
-                      className="w-full! bg-[#0B1A15]! hover:border-[#0EC971]! focus:border-[#0EC971]! rounded-xl!"
+                      className="w-full bg-[#0B1A15] hover:border-[#0EC971]! focus:border-[#0EC971] rounded-xl p-2 mt-1"
                       placeholder="Your email"
                       size="large"
                     />
@@ -161,7 +177,7 @@ const EmailPasswordPage: React.FC<IProps> = () => {
                     className=""
                   >
                     <Input.Password
-                      className="bg-[#0B1A15]! hover:border-[#0EC971]! focus-within:border-[#0EC971]! rounded-xl!"
+                      className="bg-[#0B1A15]! hover:border-[#0EC971]  focus-within:border-[#0EC971] rounded-xl p-2 mt-1"
                       placeholder="Your password"
                       size="large"
                     />
