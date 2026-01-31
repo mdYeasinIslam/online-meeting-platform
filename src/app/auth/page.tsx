@@ -4,11 +4,9 @@ import { createSupabaseServerClient } from "@/src/@modules/auth/libs/supabase/se
 import toast from "react-hot-toast";
 
 const page = async () => {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
   return (
     <>
-      <EmailPasswordPage user={data.user} />
+      <EmailPasswordPage />
     </>
   );
 };

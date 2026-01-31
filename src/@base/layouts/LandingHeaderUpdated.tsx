@@ -6,43 +6,16 @@ import useWindowSize from "@/src/@libs/hooks/useWindowSize";
 import { cn } from "@/src/@libs/utils/cn";
 import { Paths } from "@/src/@libs/utils/paths";
 import { getSupabaseBrowserClient } from "@/src/@modules/auth/libs/supabase/browser-client";
-import { createSupabaseServerClient } from "@/src/@modules/auth/libs/supabase/server-client";
 import { User } from "@supabase/supabase-js";
-import { Button, Menu } from "antd";
+import { Button } from "antd";
 
 import Link from "next/link";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import {  usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { BiX } from "react-icons/bi";
 import { FaHome } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
 
-const redirectPath = [
-  {
-    url: "https://wage-employer.vercel.app/auth",
-    panelType: "employer",
-    panel: "employers",
-    type: "login",
-  },
-  {
-    url: "https://wage-employer.vercel.app/auth",
-    panelType: "employer",
-    panel: "employers",
-    type: "sign-up",
-  },
-  {
-    url: "https://wage-provider.vercel.app/auth",
-    panelType: "provider",
-    panel: "providers",
-    type: "login",
-  },
-  {
-    url: "https://wage-provider.vercel.app/auth",
-    panelType: "provider",
-    panel: "providers",
-    type: "sign-up",
-  },
-];
 const navItems = [
   {
     id: 1,
@@ -61,6 +34,7 @@ export default function LandingHeaderUpdated() {
     useResize<HTMLDivElement>();
   const { height } = useWindowSize();
   const pathName = usePathname();
+  const router = useRouter()
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const ref = useRef(null);
   const [isSolid, setIsSolid] = useState(false);
@@ -70,7 +44,7 @@ export default function LandingHeaderUpdated() {
     key: "auth-user",
     initialValue: null,
   });
-
+console.log(user)
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -98,9 +72,9 @@ export default function LandingHeaderUpdated() {
     if (value === "signOut") {
       const supabase = getSupabaseBrowserClient();
       await supabase.auth.signOut();
-      redirect("/auth");
+      router.push("/auth");
     }
-    redirect("/auth");
+    router.push("/auth");
   };
   // useClickOutside(ref, handleClickOutsideFn);
   useEffect(() => {
@@ -145,6 +119,7 @@ export default function LandingHeaderUpdated() {
                       {
                         "text-(--color-primary-500) underline font-bold":
                           pathName === item.href,
+                        "text-white": !isSolid,
                       },
                     )}
                   >

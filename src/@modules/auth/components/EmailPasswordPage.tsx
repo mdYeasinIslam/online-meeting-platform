@@ -10,24 +10,47 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { getSupabaseBrowserClient } from "../libs/supabase/browser-client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
+import { User } from "@supabase/supabase-js";
 interface FieldType {
   email?: string;
   password?: string;
   remember?: string;
 }
 interface IProps {
-  user: any;
+  user?: any;
 }
-type AuthTab = "signIn" | "signUp";
-const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
+const EmailPasswordPage: React.FC<IProps> = () => {
   const router = useRouter();
+  const [user] = useGlobalState<User | null>({
+    key: "auth-user",
+    initialValue: null,
+  });
+  const [authTab, setAuthTab] = useState("signUp");
+  const supabase = getSupabaseBrowserClient();
+  
   useEffect(() => {
     if (user) {
       router.push("/");
     }
   }, [user, router]);
-  const [authTab, setAuthTab] = useState("signUp");
-  const supabase = getSupabaseBrowserClient();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "signIn" || tab === "signUp") {
+      setAuthTab(tab);
+    }
+    handleAuthTabChange(tab || "signUp")
+  }, []);
+
+  const handleAuthTabChange = (tab: string) => {
+    setAuthTab(tab);
+    const params = new URLSearchParams();
+    params.set("tab", tab);
+    window.history.pushState(null, "", `?${params.toString()}`);
+  };
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!values?.email || !values?.password) return;
     if (authTab === "signUp") {
@@ -38,7 +61,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
       if (error) {
         toast.error(error.message);
       } else {
-       setAuthTab('signIn')
+        setAuthTab("signIn");
         toast.success("Account created successfully");
       }
     } else {
@@ -49,7 +72,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
       if (error) {
         toast.error(error.message);
       } else {
-        router.push('/')
+        router.push("/");
         toast.success("Logged in successfully");
       }
     }
@@ -61,7 +84,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
     console.log("Failed:", errorInfo);
   };
   return (
-    <section className="">
+    <section>
       <div className="container min-h-full">
         <div className="flex justify-between items-center py-10 border-b border-gray-500">
           <h1 className="text-xl md:text-3xl font-semibold">
@@ -103,7 +126,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
                 {["signIn", "signUp"].map((tab) => (
                   <Button
                     key={tab}
-                    onClick={() => setAuthTab(tab)}
+                    onClick={() => handleAuthTabChange(tab)}
                     className={cn(
                       "max-lg:w-full px-6 py-1 rounded-3xl! border-none!  capitalize duration-300 ease-linear bg-transparent! hover:text-white! font-semibold!",
                       {
@@ -124,7 +147,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
               autoComplete="off"
               layout="vertical"
             >
-              <Row>
+              <Row gutter={[16, 16]}>
                 <Col xs={24}>
                   <Form.Item
                     label="Email"
@@ -135,7 +158,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
                     className=""
                   >
                     <Input
-                      className="w-full! bg-[#0B1A15]! hover:border-[#0EC971]! focus:border-[#0EC971]! rounded-xl!"
+                      className="w-full bg-[#0B1A15] hover:border-[#0EC971]! focus:border-[#0EC971] rounded-xl p-2 mt-1"
                       placeholder="Your email"
                       size="large"
                     />
@@ -154,7 +177,7 @@ const EmailPasswordPage: React.FC<IProps> = ({ user }) => {
                     className=""
                   >
                     <Input.Password
-                      className="bg-[#0B1A15]! hover:border-[#0EC971]! focus-within:border-[#0EC971]! rounded-xl!"
+                      className="bg-[#0B1A15]! hover:border-[#0EC971]  focus-within:border-[#0EC971] rounded-xl p-2 mt-1"
                       placeholder="Your password"
                       size="large"
                     />

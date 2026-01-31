@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { NextFontWithVariable } from "next/dist/compiled/@next/font";
 import { Poppins } from "next/font/google";
-import Provider from "../@libs/context/Provider";
-import "./globals.css";
 import LandingHeaderUpdated from "../@base/layouts/LandingHeaderUpdated";
-import { createSupabaseServerClient } from "../@modules/auth/libs/supabase/server-client";
+import Provider from "../@libs/context/Provider";
 import AuthInitializer from "../@modules/auth/components/AuthInitializer";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Lets-Talk",
@@ -29,14 +28,11 @@ export default async function RootLayout({
   };
 
   const poppinsFont = fontWithMorePropsCreateFn(poppins, "--font-poppins");
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.getUser();
-
   return (
     <html lang="en">
       <body className="bg-[#060B17] text-white designed_scrollbar ">
         <Provider nextFont={[poppinsFont]}>
-          <AuthInitializer user={data.user} />
+          <AuthInitializer  />
           <LandingHeaderUpdated />
           <main>{children}</main>
         </Provider>
