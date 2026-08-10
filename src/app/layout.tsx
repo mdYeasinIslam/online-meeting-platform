@@ -32,7 +32,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="bg-[#060B17] text-white designed_scrollbar ">
         <Provider nextFont={[poppinsFont]}>
-          <AuthInitializer  />
+          {/* <AuthInitializer  /> */}
           <LandingHeaderUpdated />
           <main>{children}</main>
         </Provider>
