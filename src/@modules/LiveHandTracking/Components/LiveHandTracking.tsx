@@ -6,7 +6,7 @@ const LiveHandTracking = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [detectedSign, setDetectedSign] = useState<string>(
-    "হাত দেখান (Show Hand)",
+    "ক্যামেরা অন করুন / হাত দেখান (Show Hand)",
   );
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
 
@@ -24,18 +24,17 @@ const LiveHandTracking = () => {
       });
 
       hands.setOptions({
-        maxNumHands: 1,
+        maxNumHands: 2,
         modelComplexity: 1,
         minDetectionConfidence: 0.7,
         minTrackingConfidence: 0.7,
       });
 
       hands.onResults((results) => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
+          const canvas = canvasRef.current;
+          if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
-
         // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -48,7 +47,6 @@ const LiveHandTracking = () => {
           results.multiHandLandmarks.length > 0
         ) {
           const landmarks = results.multiHandLandmarks[0];
-
           // Draw connections & points
           drawConnectors(ctx, landmarks, handsModule.HAND_CONNECTIONS, {
             color: "#00FF00",
@@ -130,7 +128,7 @@ const LiveHandTracking = () => {
       <p className="text-gray-400 mb-6">Thesis Prototype Demo (Phase 1)</p>
 
       {/* Video / Canvas Container */}
-      <div className="relative w-[640px] h-[480px] bg-black rounded-xl overflow-hidden shadow-2xl border-2 border-emerald-500">
+      <div className="relative w-160 h-120 bg-black rounded-xl overflow-hidden shadow-2xl border-2 border-emerald-500">
         <video
           ref={videoRef}
           className="hidden"
@@ -148,7 +146,7 @@ const LiveHandTracking = () => {
       </div>
 
       {/* Real-time Recognition Box */}
-      <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700 w-[640px] text-center">
+      <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700 w-160 text-center">
         <span className="text-gray-400 text-sm block mb-1">
           প্রমোহ/চিহ্নিত শব্দ (Recognized Output):
         </span>
