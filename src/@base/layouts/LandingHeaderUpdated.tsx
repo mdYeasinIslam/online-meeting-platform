@@ -44,7 +44,6 @@ export default function LandingHeaderUpdated() {
     key: "auth-user",
     initialValue: null,
   });
-console.log(user)
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -93,7 +92,7 @@ console.log(user)
         <div
           className={cn(
             "w-full fixed top-0 left-0 right-0 transition-all  duration-500 z-50",
-            isSolid ? "bg-white linear-gradient" : "bg-[#032416] ",
+            isSolid ? "bg-[#032416] linear-gradient" : "bg-[#032416] ",
             isVisible ? "translate-y-0" : "-translate-y-full",
             {
               "bg-white/50 backdrop-blur-3xl": isMobileMenuOpen && isSolid,
@@ -117,7 +116,7 @@ console.log(user)
                     className={cn(
                       "flex flex-col hover:underline  text-[#101828] font-semibold",
                       {
-                        "text-(--color-primary-500) underline font-bold":
+                        "text-white underline font-bold":
                           pathName === item.href,
                         "text-white": !isSolid,
                       },
@@ -158,15 +157,15 @@ console.log(user)
                     key={tab}
                     onClick={() => handleRedirectFn("")}
                     className={cn(
-                      "lg:max-lg:w-full px-6 py-1 rounded-lg! border-none!  capitalize duration-300 ease-linear   font-semibold! bg-transparent!  ",
+                      "lg:max-lg:w-full px-6 py-1 rounded-lg! border-none!  capitalize duration-300 ease-linear   font-semibold! bg-transparent!",
                       {
                         "bg-[#15573C]! hover:text-white!": tab === "signIn",
-                        "hover:bg-[#15573C]! hover:text-white!":
+                        "bg-[#15573C]! text-white!":
                           tab === "signUp",
                       },
-                      {
-                        "text-[#15573C]! ": isSolid && tab !== "signIn",
-                      },
+                      // {
+                      //   "text-[#15573C]! ": isSolid && tab !== "signIn",
+                      // },
                     )}
                   >
                     {tab}

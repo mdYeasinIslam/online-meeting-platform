@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 const page = async () => {
   return (
     <>
-      <EmailPasswordPage />
+      {/* <EmailPasswordPage /> */}
     </>
   );
 };

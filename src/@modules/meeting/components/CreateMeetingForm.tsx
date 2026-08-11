@@ -15,7 +15,7 @@ export default function CreateMeetingForm() {
   const [message, setMessage] = useState("");
   const [createdMeeting, setCreatedMeeting] = useState(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e:any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -23,7 +23,7 @@ export default function CreateMeetingForm() {
     }));
   };
 
-  const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e :any) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
@@ -176,6 +176,31 @@ export default function CreateMeetingForm() {
         </p>
       )}
 
+      {/* {createdMeeting && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "15px",
+            backgroundColor: "#f0f0f0",
+            borderRadius: "5px",
+          }}
+        >
+          <h3>Meeting Created!</h3>
+          <p>
+            <strong>Join URL:</strong>{" "}
+            <a
+              href={createdMeeting.joinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {createdMeeting.joinUrl}
+            </a>
+          </p>
+          <p>
+            <strong>Meeting ID:</strong> {createdMeeting.meetingId}
+          </p>
+        </div>
+      )} */}
     </div>
   );
 }
