@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
+import * as tf from "@tensorflow/tfjs";
+import {
+  drawConnectors,
+  drawLandmarks,
+  normalizeLandmarks,
+} from "../libs/helper";
 const LiveHandTracking = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -9,7 +14,43 @@ const LiveHandTracking = () => {
     "ক্যামেরা অন করুন / হাত দেখান (Show Hand)",
   );
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
+  const [confidence, setConfidence] = useState<number>(0);
+  const [isModelLoaded, setIsModelLoaded] = useState<boolean>(false);
 
+  // Refs for tracking active objects across renders
+  const modelRef = useRef<tf.LayersModel | null>(null);
+  const labelsRef = useRef<{ [key: string]: string }>({});
+
+  // Load TensorFlow.js Model & Labels
+  useEffect(() => {
+    async function loadModelAndLabels() {
+      try {
+        console.log("Loading TensorFlow.js model...");
+        // Ensure TF backend is ready
+        await tf.ready();
+        console.log("Model loaded successfully:");
+
+        // Load Keras model from public/model/model.json
+        // NEW CODE:
+        const loadedModel = await tf.loadLayersModel("/model/model.json", {
+          strict: false,
+        });
+        modelRef.current = loadedModel;
+
+        // Load class label mappings from public/model/labels.json
+        const labelsResponse = await fetch("/model/labels.json");
+        const labelsData = await labelsResponse.json();
+        labelsRef.current = labelsData;
+
+        setIsModelLoaded(true);
+        console.log("✅ Model and Labels successfully loaded!");
+      } catch (error) {
+        console.error("❌ Failed to load model or labels:", error);
+      }
+    }
+
+    loadModelAndLabels();
+  }, []);
   useEffect(() => {
     let camera: any = null;
 
@@ -31,8 +72,8 @@ const LiveHandTracking = () => {
       });
 
       hands.onResults((results) => {
-          const canvas = canvasRef.current;
-          if (!canvas) return;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
         // Clear canvas
@@ -53,12 +94,41 @@ const LiveHandTracking = () => {
             lineWidth: 3,
           });
           drawLandmarks(ctx, landmarks, { color: "#FF0000", lineWidth: 2 });
+          // Run AI Inference if model is loaded
+          if (modelRef.current && Object.keys(labelsRef.current).length > 0) {
+            tf.tidy(() => {
+              // Extract and normalize 63 features
+              const normalizedFeatures = normalizeLandmarks(landmarks);
 
+              // Convert array to 2D Tensor shape [1, 63]
+              const inputTensor = tf.tensor2d([normalizedFeatures], [1, 63]);
+
+              // Execute model prediction
+              const prediction = modelRef.current!.predict(
+                inputTensor,
+              ) as tf.Tensor;
+              const probabilities = prediction.dataSync();
+
+              // Get top predicted class index & confidence score
+              const maxProbability = Math.max(...Array.from(probabilities));
+              const predictedClassIndex = probabilities.indexOf(maxProbability);
+
+              const predictedLabel =
+                labelsRef.current[predictedClassIndex.toString()] ||
+                "অজানা (Unknown)";
+
+                console.log(maxProbability);
+              setDetectedSign(predictedLabel);
+              setConfidence(Math.round(maxProbability * 1000));
+            });
+          }
           // Placeholder prediction logic for Day 1
           // Day 2 we will replace this with our trained AI model!
-          setDetectedSign("হাত সনাক্ত করা হয়েছে (Hand Detected)");
+          // setDetectedSign("হাত সনাক্ত করা হয়েছে (Hand Detected)");
         } else {
-          setDetectedSign("কোনো হাত পাওয়া যায়নি (No Hand Detected)");
+          // setDetectedSign("কোনো হাত পাওয়া যায়নি (No Hand Detected)");
+          setDetectedSign("হাত দেখান (Show Hand)");
+          setConfidence(0);
         }
       });
 
@@ -83,50 +153,25 @@ const LiveHandTracking = () => {
       if (camera) camera.stop();
     };
   }, []);
-
-  // Simple canvas drawing helper functions
-  function drawLandmarks(
-    ctx: CanvasRenderingContext2D,
-    landmarks: any[],
-    style: any,
-  ) {
-    for (const lm of landmarks) {
-      const x = lm.x * ctx.canvas.width;
-      const y = lm.y * ctx.canvas.height;
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, 2 * Math.PI);
-      ctx.fillStyle = style.color;
-      ctx.fill();
-    }
-  }
-
-  function drawConnectors(
-    ctx: CanvasRenderingContext2D,
-    landmarks: any[],
-    connections: any[],
-    style: any,
-  ) {
-    for (const [start, end] of connections) {
-      const p1 = landmarks[start];
-      const p2 = landmarks[end];
-      if (p1 && p2) {
-        ctx.beginPath();
-        ctx.moveTo(p1.x * ctx.canvas.width, p1.y * ctx.canvas.height);
-        ctx.lineTo(p2.x * ctx.canvas.width, p2.y * ctx.canvas.height);
-        ctx.strokeStyle = style.color;
-        ctx.lineWidth = style.lineWidth;
-        ctx.stroke();
-      }
-    }
-  }
-
+console.log(isModelLoaded);
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white p-6">
       <h1 className="text-3xl font-bold mb-2">
         Bangla Sign Language Recognition
       </h1>
       <p className="text-gray-400 mb-6">Thesis Prototype Demo (Phase 1)</p>
-
+      {/* Model Status Indicator */}
+      <div className="mb-4">
+        {isModelLoaded ? (
+          <span className="bg-emerald-900 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500">
+            🟢 AI Model Ready (In-Browser TF.js)
+          </span>
+        ) : (
+          <span className="bg-yellow-900 text-yellow-300 text-xs font-semibold px-3 py-1 rounded-full border border-yellow-500">
+            🟡 Loading AI Model...
+          </span>
+        )}
+      </div>
       {/* Video / Canvas Container */}
       <div className="relative w-160 h-120 bg-black rounded-xl overflow-hidden shadow-2xl border-2 border-emerald-500">
         <video
@@ -145,14 +190,22 @@ const LiveHandTracking = () => {
         />
       </div>
 
-      {/* Real-time Recognition Box */}
-      <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700 w-160 text-center">
+      {/* Real-time Result Card */}
+      <div className="mt-6 p-5 bg-gray-800 rounded-xl border border-gray-700 w-160 text-center shadow-lg">
         <span className="text-gray-400 text-sm block mb-1">
-          প্রমোহ/চিহ্নিত শব্দ (Recognized Output):
+          চিহ্নিত বাংলা বর্ণ (Recognized Bangla Sign):
         </span>
-        <span className="text-3xl font-extrabold text-emerald-400">
-          {detectedSign}
-        </span>
+        <div className="flex items-center justify-center space-x-3 my-2">
+          <span className="text-5xl font-extrabold text-emerald-400 ">
+            {detectedSign}
+          </span>
+        </div>
+        {confidence > 0 && (
+          <span className="text-xs text-gray-400">
+            নির্ভুলতার হার (Confidence):{" "}
+            <strong className="text-emerald-300">{confidence}%</strong>
+          </span>
+        )}
       </div>
     </main>
   );

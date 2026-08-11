@@ -44,7 +44,6 @@ export default function LandingHeaderUpdated() {
     key: "auth-user",
     initialValue: null,
   });
-console.log(user)
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
