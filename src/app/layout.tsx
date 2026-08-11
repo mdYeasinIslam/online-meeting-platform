@@ -3,7 +3,6 @@ import { NextFontWithVariable } from "next/dist/compiled/@next/font";
 import { Poppins } from "next/font/google";
 import LandingHeaderUpdated from "../@base/layouts/LandingHeaderUpdated";
 import Provider from "../@libs/context/Provider";
-import AuthInitializer from "../@modules/auth/components/AuthInitializer";
 import "./globals.css";
 
 export const metadata: Metadata = {

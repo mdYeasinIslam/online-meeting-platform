@@ -15,7 +15,7 @@ export default function CreateMeetingForm() {
   const [message, setMessage] = useState("");
   const [createdMeeting, setCreatedMeeting] = useState(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e:any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -23,7 +23,7 @@ export default function CreateMeetingForm() {
     }));
   };
 
-  const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e :any) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
