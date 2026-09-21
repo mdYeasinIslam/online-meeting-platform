@@ -21,12 +21,17 @@ test("register, login, create, copy invite, logout and return through authentica
   await expect(page).toHaveURL(/\/meeting\/[a-f0-9-]+$/);
   await expect(page.getByRole("heading", { name: "Supervisor demo" })).toBeVisible();
   await expect(page.getByText("Thesis Host (you) · Host", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Camera", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Join meeting", exact: true })).toBeEnabled();
+  await expect(page.getByLabel("Camera on when joining")).toBeChecked();
+  if (process.env.DAY2_LIVEKIT !== "1") {
+    await page.getByRole("button", { name: "Join meeting", exact: true }).click();
+    await expect(page.locator("section").getByRole("alert")).toContainText("LiveKit is not configured");
+  }
   const invite = page.url();
   await page.getByRole("button", { name: "Copy invite link" }).click();
   await expect(page.getByText("Invite link copied.")).toBeVisible();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(invite);
-  await page.getByRole("link", { name: "Leave meeting", exact: true }).click();
+  await page.getByRole("button", { name: "Leave meeting", exact: true }).click();
   await expect(page.getByRole("link", { name: "Supervisor demo" })).toBeVisible();
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page).toHaveURL(/\/auth/);

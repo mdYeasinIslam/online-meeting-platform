@@ -3,7 +3,10 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e", workers: 1, timeout: 45000,
   use: { baseURL: "http://localhost:3000", browserName: "chromium", headless: true,
-    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || (existsSync("/usr/bin/google-chrome") ? "/usr/bin/google-chrome" : undefined) },
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || (existsSync("/usr/bin/google-chrome") ? "/usr/bin/google-chrome" : undefined),
+      args: process.env.DAY2_LIVEKIT === "1" ? ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream", "--autoplay-policy=no-user-gesture-required"] : [],
+    },
   },
   webServer: [
     { command: "npm --prefix ../online-meeting-platform-server run test:serve", url: "http://localhost:5000/health", reuseExistingServer: false, timeout: 60000 },

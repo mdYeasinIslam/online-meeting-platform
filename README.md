@@ -25,7 +25,7 @@ Add it to your existing `.env.local` if needed. `.env.example` contains placehol
 
 - `/auth`: registration, email/password login, and optional Google sign-in through Express.
 - `/dashboard`: authenticated meeting creation and paginated hosted-meeting list.
-- `/meeting/[roomId]`: authenticated meeting lookup and room shell, persisted host indication, local user display, copyable absolute invite URL, and leave navigation.
+- `/meeting/[roomId]`: authenticated meeting lookup, explicit pre-join choices, LiveKit audio/video for up to seven users, live participant tiles, persisted host badges, mute/camera controls, invite copy, and clean leave/rejoin.
 - `/sign-demo`: independent opt-in webcam demo for the existing static alphabet classifier.
 - Safe invitation return paths survive switching between login/register and server-managed Google OAuth.
 - Shared API client sends cookies and fetches a session CSRF token before mutations. Session credentials are never kept in localStorage.
@@ -49,11 +49,13 @@ Route guards provide navigation only. The Express API separately authenticates a
 
 The future temporal engine may keep a feature buffer, use pose/both hands, detect sign boundaries and assemble glosses/sentences internally. It should emit accepted text through the same boundary. When integrating recognition with LiveKit, reuse the local video track instead of opening a second camera stream.
 
-## Intentional Day-1 limits
+## Day-2 conferencing and integration boundary
 
-Video tiles are placeholders. Microphone, camera and sign-recognition meeting controls are disabled. The standalone demo works separately; its accepted output is not broadcast. No invented participants or captions are rendered.
+Joining fetches fresh room-scoped credentials from Express and creates one LiveKit Room for that join attempt. The SDK owns WebRTC and reconnection. Official React hooks/components render participants and media. Devices are requested only after Join; either device may fail independently. Unmount, navigation and Leave disconnect the room and stop tracks. Each participant needs a different authenticated account: joining the same account twice replaces its earlier LiveKit connection.
 
-The client LiveKit module can request join credentials and create a Room object. It does not connect the room yet. Remote caption transport, speech recognition, full multi-user calls and a temporal model remain later work. Remote participant attribution must be checked against the actual LiveKit sender identity, not trusted from the message payload.
+Use HTTPS or localhost for browser camera/microphone access. For tests on another device, a localhost invite points to that device itself; use a reachable HTTPS frontend and the corresponding configured API/CORS origin.
+
+Caption types, feed, panel and `SignRecognitionEngine` are unchanged. The meeting's sign control is explicitly disabled. The local Room context supplies the existing camera publication for future recognition; do not open a second camera stream. A Day-3 transport adapter can feed validated caption events into the existing feed, deriving attribution from the authenticated LiveKit sender. No caption protocol, mock captions, speech recognition or continuous sign recognition is implemented today.
 
 ## Verification commands
 
@@ -65,7 +67,7 @@ npm run build
 npm run test:e2e
 ```
 
-The browser test requires the server's dev dependencies and free ports 3000/5000. It starts a temporary MongoDB database and test Express process; it never uses the real server `.env`. It uses `/usr/bin/google-chrome` if present, otherwise install Playwright Chromium with `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
+The browser test requires the server's dev dependencies and free ports 3000/5000. It starts a temporary MongoDB database and test Express process; the default suite never uses the real server `.env`. It uses `/usr/bin/google-chrome` if present, otherwise install Playwright Chromium with `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
 
 MongoDB tests use `/usr/bin/mongod` if present, otherwise mongodb-memory-server downloads a test binary. Override with `MONGOMS_SYSTEM_BINARY` if needed. `npm test` uses Node's experimental TypeScript stripping on Node 22.16.
 
@@ -77,3 +79,13 @@ npm start
 ```
 
 See [Day-1 delivery report](docs/DAY-1-DELIVERY.md) for the audit, exact changed files, verified results, dependency advisories and Day-2 work.
+
+For the opt-in real LiveKit suite, after building:
+
+```bash
+DAY2_LIVEKIT=1 npm run test:e2e
+```
+
+This reads only the LiveKit configuration from the server environment, still uses an isolated MongoDB database, creates temporary LiveKit rooms, and deletes those rooms during shutdown. Chrome uses synthetic camera/microphone devices. It does not verify physical-device quality or human-audible speech. Keep ports 3000/5000 free; the test runner starts both applications.
+
+See [Day-2 delivery report](docs/DAY-2-DELIVERY.md) for current scope, verification and the exact two-browser manual test procedure. Day-1 documentation remains a historical record; the current Day-2 scope postpones caption transport to Day-3.
