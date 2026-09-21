@@ -1,206 +1,52 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "@/src/@libs/api/client";
+import type { Meeting } from "../types";
 export default function CreateMeetingForm() {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    scheduledTime: "",
-    durationMinutes: 60,
-    createdBy: "",
-    password: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [createdMeeting, setCreatedMeeting] = useState(null);
-
-  const handleChange = (e:any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e :any) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    const title = String(new FormData(event.currentTarget).get("title") || "");
     try {
-      const response = await fetch("/api/meetings/create", {
+      const result = await api<{ meeting: Meeting }>("/meetings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: { title },
       });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage("Meeting created successfully!");
-        setCreatedMeeting(data);
-        setFormData({
-          title: "",
-          description: "",
-          scheduledTime: "",
-          durationMinutes: 60,
-          createdBy: "",
-          password: "",
-        });
-      } else {
-        setMessage(`Error: ${data.error}`);
-      }
+      router.push(`/meeting/${result.meeting.roomId}`);
     } catch (error) {
-      setMessage("Failed to create meeting");
-      console.error(error);
+      setError(
+        error instanceof Error ? error.message : "Unable to create meeting.",
+      );
     } finally {
-      setLoading(false);
+      setBusy(false);
     }
-  };
-
+  }
   return (
-    <div style={{ maxWidth: "500px", margin: "0 auto", padding: "20px" }}>
-      <h2>Create Zoom Meeting</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="title">Meeting Title *</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            placeholder="Team Standup"
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Meeting details..."
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="scheduledTime">Meeting Time *</label>
-          <input
-            type="datetime-local"
-            id="scheduledTime"
-            name="scheduledTime"
-            value={formData.scheduledTime}
-            onChange={handleChange}
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="durationMinutes">Duration (minutes) *</label>
-          <input
-            type="number"
-            id="durationMinutes"
-            name="durationMinutes"
-            value={formData.durationMinutes}
-            onChange={handleChange}
-            min="15"
-            max="1440"
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="createdBy">Your Name *</label>
-          <input
-            type="text"
-            id="createdBy"
-            name="createdBy"
-            value={formData.createdBy}
-            onChange={handleChange}
-            placeholder="John Doe"
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="password">Meeting Password (Optional)</label>
-          <input
-            type="text"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Leave empty for no password"
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#2E8B99",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: loading ? "not-allowed" : "pointer",
-            fontSize: "16px",
-          }}
-        >
-          {loading ? "Creating..." : "Create Meeting"}
-        </button>
-      </form>
-
-      {message && (
-        <p
-          style={{
-            marginTop: "15px",
-            color: message.includes("Error") ? "red" : "green",
-          }}
-        >
-          {message}
-        </p>
-      )}
-
-      {/* {createdMeeting && (
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "15px",
-            backgroundColor: "#f0f0f0",
-            borderRadius: "5px",
-          }}
-        >
-          <h3>Meeting Created!</h3>
-          <p>
-            <strong>Join URL:</strong>{" "}
-            <a
-              href={createdMeeting.joinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {createdMeeting.joinUrl}
-            </a>
-          </p>
-          <p>
-            <strong>Meeting ID:</strong> {createdMeeting.meetingId}
-          </p>
-        </div>
-      )} */}
-    </div>
+    <form onSubmit={submit} className="my-6 max-w-lg space-y-3">
+      <label className="block">
+        Meeting title (optional)
+        <input
+          disabled={busy}
+          name="title"
+          maxLength={120}
+          className="mt-2 w-full rounded border p-3"
+          placeholder="Thesis demonstration"
+        />
+      </label>
+      <button
+        disabled={busy}
+        className="rounded bg-emerald-700 p-3 disabled:opacity-50 cursor-pointer"
+      >
+        {busy ? "Creating…" : "Create meeting"}
+      </button>
+      <p role="alert" className="text-amber-200">
+        {error}
+      </p>
+    </form>
   );
 }

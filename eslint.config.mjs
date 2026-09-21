@@ -21,7 +21,6 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "no-console": ["error", { allow: ["info", "warn", "error"] }],
-      "unused-imports/no-unused-imports": "error",
     },
   },
 ]);

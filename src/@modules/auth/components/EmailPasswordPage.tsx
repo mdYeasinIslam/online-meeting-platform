@@ -1,210 +1,41 @@
 "use client";
-import { cn } from "@/src/@libs/utils/cn";
-import type { FormProps } from "antd";
-import { Button, Col, Form, Input, Row } from "antd";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { FaArrowRightLong } from "react-icons/fa6";
-import { getSupabaseBrowserClient } from "../libs/supabase/browser-client";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import useGlobalState from "@/src/@libs/hooks/useGlobalState";
-import { User } from "@supabase/supabase-js";
-interface FieldType {
-  email?: string;
-  password?: string;
-  remember?: string;
-}
-interface IProps {
-  user?: any;
-}
-const EmailPasswordPage: React.FC<IProps> = () => {
-  const router = useRouter();
-  const [user] = useGlobalState<User | null>({
-    key: "auth-user",
-    initialValue: null,
-  });
-  const [authTab, setAuthTab] = useState("signUp");
-  const supabase = getSupabaseBrowserClient();
-  
+import { api, API_BASE_URL } from "@/src/@libs/api/client";
+import { useAuth } from "../context/AuthProvider";
+import type { AuthUser } from "../types";
+export default function EmailPasswordPage({ next, initialError }: { next: string; initialError: string }) {
+  const { user, acceptUser } = useAuth(); const router = useRouter();
+  const [register, setRegister] = useState(false);
+  const [busy, setBusy] = useState(false); const [error, setError] = useState(initialError);
+  const [google, setGoogle] = useState(false);
+  useEffect(() => { if (user) router.replace(next); }, [user, router, next]);
   useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [user, router]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get("tab");
-    if (tab === "signIn" || tab === "signUp") {
-      setAuthTab(tab);
-    }
-    handleAuthTabChange(tab || "signUp")
+    const controller = new AbortController();
+    void api<{ google: boolean }>("/auth/providers", { signal: controller.signal }).then(result => setGoogle(result.google)).catch(() => {});
+    return () => controller.abort();
   }, []);
-
-  const handleAuthTabChange = (tab: string) => {
-    setAuthTab(tab);
-    const params = new URLSearchParams();
-    params.set("tab", tab);
-    window.history.pushState(null, "", `?${params.toString()}`);
-  };
-
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    if (!values?.email || !values?.password) return;
-    if (authTab === "signUp") {
-      const { error } = await supabase.auth.signUp({
-        email: values?.email,
-        password: values?.password,
-      });
-      if (error) {
-        toast.error(error.message);
-      } else {
-        setAuthTab("signIn");
-        toast.success("Account created successfully");
-      }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-      if (error) {
-        toast.error(error.message);
-      } else {
-        router.push("/");
-        toast.success("Logged in successfully");
-      }
-    }
-  };
-
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo,
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
-  return (
-    <section>
-      <div className="container min-h-full">
-        <div className="flex justify-between items-center py-10 border-b border-gray-500">
-          <h1 className="text-xl md:text-3xl font-semibold">
-            Authentication System
-          </h1>
-          <Link
-            href={"/"}
-            className="flex items-center gap-2 text-[#0EC971]! font-semibold hover:underline"
-          >
-            <span className="text-base md:text-lg">Back Home</span>{" "}
-            <FaArrowRightLong size={16} />
-          </Link>
-        </div>
-        <div className=" min-h-[80vh] grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-10 mt-5">
-          <div>
-            <Image
-              src={
-                "https://i.ibb.co.com/M5SHd6QK/user-typing-login-passwordhand-man-use-mobile-phone-log-enter-login-passwordsign-pageuser-profileinf.jpg"
-              }
-              alt="Auth Images"
-              width={500}
-              height={500}
-              className="w-full h-full rounded-xl"
-            />
-          </div>
-          <div className="max-w-lg mx-auto h-fit bg-[#07140D] p-4 lg:p-6! rounded-3xl border border-[#084d2c]">
-            <div className="flex flex-col lg:flex-row justify-between md:items-center gap-5 my-6">
-              <div className=" max-lg:text-center">
-                <h1 className="uppercase text-base md:text-lg font-semibold text-[#084d2c]">
-                  Credentials
-                </h1>
-                <p className="text-lg md:text-xl font-semibold">
-                  {authTab === "signIn"
-                    ? "Sign in to your account"
-                    : "Create a new account"}
-                </p>
-              </div>
-              <div className="flex justify-center max-lg:w-full items-center gap-1 bg-[#1B251F] rounded-full p-1 border border-gray-600">
-                {["signIn", "signUp"].map((tab) => (
-                  <Button
-                    key={tab}
-                    onClick={() => handleAuthTabChange(tab)}
-                    className={cn(
-                      "max-lg:w-full px-6 py-1 rounded-3xl! border-none!  capitalize duration-300 ease-linear bg-transparent! hover:text-white! font-semibold!",
-                      {
-                        "bg-[#15573C]!": authTab === tab,
-                      },
-                    )}
-                  >
-                    {tab === "signIn" ? "Sign In" : "Sign Up"}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            <Form
-              name="sign-in"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-              layout="vertical"
-            >
-              <Row gutter={[16, 16]}>
-                <Col xs={24}>
-                  <Form.Item
-                    label="Email"
-                    name="email"
-                    rules={[
-                      { required: true, message: "Please input your email!" },
-                    ]}
-                    className=""
-                  >
-                    <Input
-                      className="w-full bg-[#0B1A15] hover:border-[#0EC971]! focus:border-[#0EC971] rounded-xl p-2 mt-1"
-                      placeholder="Your email"
-                      size="large"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24}>
-                  <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your password!",
-                      },
-                    ]}
-                    className=""
-                  >
-                    <Input.Password
-                      className="bg-[#0B1A15]! hover:border-[#0EC971]  focus-within:border-[#0EC971] rounded-xl p-2 mt-1"
-                      placeholder="Your password"
-                      size="large"
-                    />
-                  </Form.Item>
-                </Col>
-
-                {/* <Form.Item name="remember" valuePropName="checked">
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item> */}
-                <Col xs={24}>
-                  <Form.Item>
-                    <Button
-                      type="primary"
-                      className="w-full text-black! hover:text-white! bg-[#0EC971]! hover:bg-[#15573C]! rounded-full! text-lg! font-semibold! py-5! "
-                      htmlType="submit"
-                    >
-                      {authTab === "signIn" ? "Sign In" : "Create account"}
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default EmailPasswordPage;
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setError("");
+    const form = new FormData(event.currentTarget);
+    const body = { email: String(form.get("email")), password: String(form.get("password")), ...(register ? { displayName: String(form.get("displayName")) } : {}) };
+    try {
+      const result = await api<{ user: AuthUser }>(register ? "/auth/register" : "/auth/login", { method: "POST", body });
+      acceptUser(result.user); router.replace(next);
+    } catch (error) { setError(error instanceof Error ? error.message : "Authentication failed."); }
+    finally { setBusy(false); }
+  }
+  return <section className="mx-auto max-w-md px-6 py-12">
+    <h1 className="text-2xl font-bold">{register ? "Create account" : "Sign in"}</h1>
+    <p className="my-4 text-slate-300">Sign in to create or join a Bangla accessible meeting.</p>
+    <form onSubmit={submit} className="space-y-4">
+      {register && <label className="block">Display name<input className="mt-1 w-full rounded border p-2" name="displayName" autoComplete="name" maxLength={80} required disabled={busy} /></label>}
+      <label className="block">Email<input className="mt-1 w-full rounded border p-2" name="email" type="email" autoComplete="email" maxLength={254} required disabled={busy} /></label>
+      <label className="block">Password<input className="mt-1 w-full rounded border p-2" name="password" type="password" autoComplete={register ? "new-password" : "current-password"} minLength={8} maxLength={128} required disabled={busy} /></label>
+      <button className="rounded bg-emerald-700 px-4 py-2 disabled:opacity-50" disabled={busy}>{busy ? "Please wait…" : register ? "Register" : "Sign in"}</button>
+    </form>
+    <button disabled={busy} className="mt-4 block underline" onClick={() => { setRegister(!register); setError(""); }}>{register ? "Already registered? Sign in" : "Create an account"}</button>
+    {google && <a className="mt-4 inline-block rounded border p-2" href={`${API_BASE_URL}/auth/google?next=${encodeURIComponent(next)}`}>Continue with Google</a>}
+    <p role="alert" className="mt-4 text-amber-200">{error}</p>
+  </section>;
+}
