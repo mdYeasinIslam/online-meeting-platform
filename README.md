@@ -55,7 +55,11 @@ Joining fetches fresh room-scoped credentials from Express and creates one LiveK
 
 Use HTTPS or localhost for browser camera/microphone access. For tests on another device, a localhost invite points to that device itself; use a reachable HTTPS frontend and the corresponding configured API/CORS origin.
 
-Caption types, feed, panel and `SignRecognitionEngine` are unchanged. The meeting's sign control is explicitly disabled. The local Room context supplies the existing camera publication for future recognition; do not open a second camera stream. A Day-3 transport adapter can feed validated caption events into the existing feed, deriving attribution from the authenticated LiveKit sender. No caption protocol, mock captions, speech recognition or continuous sign recognition is implemented today.
+Day-3 connects the existing sign engine to the same local camera. Enable **Start sign recognition**, hold a supported static alphabet steady, inspect the local recognized draft, then use **Send caption** to share it. Backspace removes a whole token; Clear edits locally. Recognition is opt-in. Camera off pauses it; camera/connection recovery resumes it while enabled. Stop does not turn off the meeting camera.
+
+Confirmed captions use versioned, validated LiveKit reliable data. Attribution comes from the authenticated sender, with bounded history, deduplication and rate limits. Captions are ephemeral: late joiners start empty, refresh clears local history, and nothing is stored in MongoDB. No speech recognition or continuous word/sentence model is implemented. The baseline weight loader now strictly assigns the preserved Keras weights rather than ignoring their name-prefix mismatch.
+
+See [Day-3 research notes](docs/DAY-3-RESEARCH.md) for actual model details, protocol limits, privacy, stabilization and future temporal integration. See [Day-3 delivery report](docs/DAY-3-DELIVERY.md) for verification and the manual two-browser test.
 
 ## Verification commands
 
@@ -63,7 +67,7 @@ Caption types, feed, panel and `SignRecognitionEngine` are unchanged. The meetin
 npm run typecheck
 npm run lint
 npm test
-npm run build
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api npm run build
 npm run test:e2e
 ```
 
@@ -80,12 +84,13 @@ npm start
 
 See [Day-1 delivery report](docs/DAY-1-DELIVERY.md) for the audit, exact changed files, verified results, dependency advisories and Day-2 work.
 
-For the opt-in real LiveKit suite, after building:
+For the opt-in real LiveKit suite, build with the isolated local API URL (this does not edit your real environment files):
 
 ```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api npm run build
 DAY2_LIVEKIT=1 npm run test:e2e
 ```
 
 This reads only the LiveKit configuration from the server environment, still uses an isolated MongoDB database, creates temporary LiveKit rooms, and deletes those rooms during shutdown. Chrome uses synthetic camera/microphone devices. It does not verify physical-device quality or human-audible speech. Keep ports 3000/5000 free; the test runner starts both applications.
 
-See [Day-2 delivery report](docs/DAY-2-DELIVERY.md) for current scope, verification and the exact two-browser manual test procedure. Day-1 documentation remains a historical record; the current Day-2 scope postpones caption transport to Day-3.
+See [Day-2 delivery report](docs/DAY-2-DELIVERY.md) for the historical conferencing milestone. The Day-3 reports above describe the current caption implementation and manual test procedure.

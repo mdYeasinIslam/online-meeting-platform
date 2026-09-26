@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useConnectionState, useLocalParticipant } from "@livekit/components-react";
 import { ConnectionState } from "livekit-client";
 import { deviceMessage } from "@/src/@modules/livekit/errors";
 
-export default function MeetingControls({ starting, leaving, onLeave }: { starting: boolean; leaving: boolean; onLeave: () => void }) {
+export default function MeetingControls({ starting, leaving, onLeave, signControl }: { starting: boolean; leaving: boolean; onLeave: () => void; signControl: ReactNode }) {
   const { localParticipant, isMicrophoneEnabled, isCameraEnabled } = useLocalParticipant();
   const state = useConnectionState();
   const lock = useRef(false);
@@ -30,7 +30,7 @@ export default function MeetingControls({ starting, leaving, onLeave }: { starti
     <div className="flex flex-wrap justify-center gap-3">
       <button disabled={disabled} aria-pressed={isMicrophoneEnabled} onClick={() => void toggle("Microphone")} className="rounded border p-3 disabled:opacity-50">{isMicrophoneEnabled ? "Mute microphone" : "Unmute microphone"}</button>
       <button disabled={disabled} aria-pressed={isCameraEnabled} onClick={() => void toggle("Camera")} className="rounded border p-3 disabled:opacity-50">{isCameraEnabled ? "Turn camera off" : "Turn camera on"}</button>
-      <button disabled title="Recognition engine integration is planned for a later stage" className="rounded border p-3 opacity-50">Sign recognition (not connected)</button>
+      {signControl}
       <button disabled={leaving} onClick={onLeave} className="rounded bg-red-800 p-3 disabled:opacity-50">{leaving ? "Leaving…" : "Leave meeting"}</button>
     </div>
     {error && <p role="alert" className="mt-3 text-amber-200">{error}</p>}

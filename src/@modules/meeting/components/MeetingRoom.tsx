@@ -7,19 +7,15 @@ import { ConnectionState } from "livekit-client";
 import { api, ApiError } from "@/src/@libs/api/client";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
 import { ROOM_ID_PATTERN } from "@/src/@modules/auth/libs/return-path";
-import CaptionPanel from "@/src/@modules/captions/CaptionPanel";
-import { useCaptionFeed } from "@/src/@modules/captions/useCaptionFeed";
 import { useMeetingConnection } from "@/src/@modules/livekit/useMeetingConnection";
 import CopyInviteButton from "./CopyInviteButton";
-import ParticipantGrid from "./ParticipantGrid";
-import MeetingControls from "./MeetingControls";
+import ConnectedMeeting from "./ConnectedMeeting";
 import PreJoin from "./PreJoin";
 import type { Meeting } from "../types";
 
 export default function MeetingRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
   const { user } = useAuth();
-  const { captions } = useCaptionFeed();
   const connection = useMeetingConnection(roomId);
   const leavingRef = useRef(false);
   const [leaving, setLeaving] = useState(false);
@@ -56,8 +52,7 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
       <p role="status" className="mb-3">{connection.state === ConnectionState.Connected ? "Connected" : "Reconnecting… Your media may pause while the connection recovers."}</p>
       <RoomAudioRenderer />
       <StartAudio label="Enable meeting audio" className="mb-3 rounded bg-blue-700 px-4 py-2" />
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]"><ParticipantGrid hostUserId={meeting.hostUserId} /><CaptionPanel captions={captions} /></div>
-      <MeetingControls starting={connection.joining} leaving={leaving} onLeave={() => void leave()} />
+      <ConnectedMeeting hostUserId={meeting.hostUserId} starting={connection.joining} leaving={leaving} onLeave={() => void leave()} />
     </RoomContext.Provider> : <>
       <PreJoin name={user?.displayName ?? ""} host={meeting.hostUserId === user?.id} joining={connection.joining} onJoin={connection.join} />
       <button disabled={leaving} onClick={() => void leave()} className="mt-4 rounded border px-4 py-2">Leave meeting</button>

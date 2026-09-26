@@ -1,5 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
-import { normalizeLandmarks } from "./normalization";
+import { loadStaticLayersModel, ModelAssetMissingError } from "./model-loader.ts";
+import { normalizeLandmarks } from "./normalization.ts";
 import type { RecognitionFrame, Prediction, SignRecognitionEngine } from "./types";
 /** Preserved one-hand, 63-feature MLP. Isolated alphabets only, not sentences. */
 export class StaticAlphabetEngine implements SignRecognitionEngine {
@@ -7,13 +8,16 @@ export class StaticAlphabetEngine implements SignRecognitionEngine {
   private model: tf.LayersModel | null = null;
   private labels: Record<string, string> = {};
   async load() {
+    if (this.model) return;
     await tf.ready();
-    const model = await tf.loadLayersModel("/model/model.json", { strict: false });
+    const model = await loadStaticLayersModel();
     try {
       const response = await fetch("/model/labels.json");
+      if (response.status === 404) throw new ModelAssetMissingError();
       if (!response.ok) throw new Error("Cannot load model labels.");
       const labels: unknown = await response.json();
       if (!labels || typeof labels !== "object" || Array.isArray(labels) || Object.values(labels).some(value => typeof value !== "string") || Object.keys(labels).length !== model.outputs[0].shape[1]) throw new Error("Invalid model labels.");
+      if (model.inputs[0].shape[1] !== 63 || model.outputs[0].shape[1] !== 36 || Array.from({ length: 36 }, (_, i) => String(i)).some(key => !Object.hasOwn(labels, key))) throw new Error("Unexpected static model shape or label indices.");
       this.labels = labels as Record<string, string>;
       this.model = model;
     } catch (error) { model.dispose(); throw error; }

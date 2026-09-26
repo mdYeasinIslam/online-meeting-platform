@@ -66,6 +66,6 @@ export default function StaticSignDemo() {
   return <section className="mx-auto max-w-3xl p-6"><h1 className="text-2xl font-bold">Bangla static alphabet demo</h1><p className="my-3 text-slate-300">Preserved 36-class MLP prototype. It does not recognize continuous words or sentences.</p>
     <button className="mb-4 rounded bg-emerald-700 p-3" onClick={() => { setEnabled(!enabled); setPrediction(""); setAccepted(""); setStatus(enabled ? "Camera is off." : "Loading the static alphabet model…"); }}>{enabled ? "Stop camera" : "Start camera"}</button>
     <video ref={videoRef} playsInline muted width={640} height={480} className="hidden" /><canvas ref={canvasRef} width={640} height={480} className="w-full -scale-x-100 rounded-xl bg-black" />
-    <p role="status" className="mt-4">{status}</p><p lang="bn">Raw prediction: {prediction || "—"}</p><p lang="bn" className="mt-4 text-2xl">Last accepted alphabet: {accepted || "—"}</p><p className="mt-2 text-slate-400">Accepted text is stabilized locally and is not broadcast to a meeting yet.</p>
+    <p role="status" className="mt-4">{status}</p><p lang="bn">Raw prediction: {prediction || "—"}</p><p lang="bn" className="mt-4 text-2xl">Last accepted alphabet: {accepted || "—"}</p><p className="mt-2 text-slate-400">This standalone demo does not send captions. Join a meeting to use the recognized-text draft and Send caption.</p>
   </section>;
 }
