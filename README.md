@@ -71,7 +71,7 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api npm run build
 npm run test:e2e
 ```
 
-The browser test requires the server's dev dependencies and free ports 3000/5000. It starts a temporary MongoDB database and test Express process; the default suite never uses the real server `.env`. It uses `/usr/bin/google-chrome` if present, otherwise install Playwright Chromium with `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
+The browser command runs the existing and dashboard-join groups in separate temporary fixture processes, keeping their combined registrations within the unchanged authentication rate limit. The browser test requires the server's dev dependencies and free ports 3000/5000. It starts a temporary MongoDB database and test Express process; the default suite never uses the real server `.env`. It uses `/usr/bin/google-chrome` if present, otherwise install Playwright Chromium with `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
 
 MongoDB tests use `/usr/bin/mongod` if present, otherwise mongodb-memory-server downloads a test binary. Override with `MONGOMS_SYSTEM_BINARY` if needed. `npm test` uses Node's experimental TypeScript stripping on Node 22.16.
 
@@ -94,3 +94,7 @@ DAY2_LIVEKIT=1 npm run test:e2e
 This reads only the LiveKit configuration from the server environment, still uses an isolated MongoDB database, creates temporary LiveKit rooms, and deletes those rooms during shutdown. Chrome uses synthetic camera/microphone devices. It does not verify physical-device quality or human-audible speech. Keep ports 3000/5000 free; the test runner starts both applications.
 
 See [Day-2 delivery report](docs/DAY-2-DELIVERY.md) for the historical conferencing milestone. The Day-3 reports above describe the current caption implementation and manual test procedure.
+
+## Day-3.5 dashboard join
+
+Use **Join meeting** beside the dashboard creation form to paste an invite URL, `/meeting/UUID` path, or raw meeting UUID. The existing authenticated Express API validates the meeting before opening its normal pre-join screen. Links always open within the current app, even when pasted from another hostname. Camera, microphone and LiveKit connect only after the existing pre-join action. See the [Day-3.5 delivery report](docs/DAY-3.5-DELIVERY.md) for changed files, error handling, tests and manual verification.

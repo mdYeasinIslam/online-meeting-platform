@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test --grep-invert join-meeting.spec.ts && playwright test join-meeting.spec.ts"
   },
   "dependencies": {
     "@livekit/components-react": "2.9.24",

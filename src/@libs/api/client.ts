@@ -1,5 +1,6 @@
 export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api"
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://online-meeting-platform-server.onrender.com/api"
 ).replace(/\/$/, "");
 export class ApiError extends Error {
   constructor(
@@ -35,6 +36,8 @@ export async function api<T>(
     method?: "GET" | "POST";
     body?: unknown;
     signal?: AbortSignal;
+    // A caller showing its own sign-in link can preserve an intended meeting.
+    notifyExpired?: boolean;
   } = {},
 ): Promise<T> {
   const method = options.method ?? "GET";
@@ -64,7 +67,7 @@ export async function api<T>(
         body:
           method === "POST" ? JSON.stringify(options.body ?? {}) : undefined,
       }),
-      path !== "/auth/me" && path !== "/auth/login",
+      options.notifyExpired ?? (path !== "/auth/me" && path !== "/auth/login"),
     );
   } catch (error) {
     if (error instanceof ApiError || options.signal?.aborted) throw error;

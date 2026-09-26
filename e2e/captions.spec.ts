@@ -69,7 +69,7 @@ test("real caption delivery validates sender, deduplicates, isolates sessions an
   const contexts = [a.context];
   try {
     await a.page.getByRole("button", { name: "Create meeting", exact: true }).click();
-    await expect(a.page.getByRole("button", { name: "Join meeting", exact: true })).toBeVisible();
+    await expect(a.page.getByRole("heading", { name: "Ready to join?", exact: true })).toBeVisible();
     const invite = a.page.url(); await join(a.page);
     const b = await participant(browser, "Caption Bob", invite); contexts.push(b.context); await join(b.page);
     await expect(a.page.locator("article[data-participant]")).toHaveCount(2);
