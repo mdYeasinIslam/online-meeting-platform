@@ -44,3 +44,15 @@ next-env.d.ts
 
 /test-results/
 /playwright-report/
+
+# Private research samples and generated artifacts (keep source manifests/docs).
+/dataset/raw/*
+/dataset/exports/*
+/dataset/splits/*
+/dataset/reports/*
+!/dataset/raw/.gitkeep
+!/dataset/exports/.gitkeep
+!/dataset/splits/.gitkeep
+!/dataset/reports/.gitkeep
+/dataset/manifests/*.local.json
+/bdsl-landmarks-*.json

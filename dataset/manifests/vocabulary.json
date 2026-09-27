@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "version": "bdsl-provisional-1",
+  "notes": "Semantic candidates only. No sign definitions or expert approval. Review before activation.",
+  "labels": [
+    {
+      "id": "greeting",
+      "bangla": "অভিবাদন",
+      "englishGloss": "greeting",
+      "category": "greetings",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "thanks",
+      "bangla": "ধন্যবাদ",
+      "englishGloss": "thanks",
+      "category": "greetings",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "water",
+      "bangla": "পানি",
+      "englishGloss": "water",
+      "category": "basic-needs",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "food",
+      "bangla": "খাবার",
+      "englishGloss": "food",
+      "category": "basic-needs",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "help",
+      "bangla": "সাহায্য",
+      "englishGloss": "help",
+      "category": "assistance",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "pain",
+      "bangla": "ব্যথা",
+      "englishGloss": "pain",
+      "category": "assistance",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "stop",
+      "bangla": "থামুন",
+      "englishGloss": "stop",
+      "category": "actions",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "come",
+      "bangla": "আসুন",
+      "englishGloss": "come",
+      "category": "actions",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "yes",
+      "bangla": "হ্যাঁ",
+      "englishGloss": "yes",
+      "category": "meeting",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "no",
+      "bangla": "না",
+      "englishGloss": "no",
+      "category": "meeting",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "repeat",
+      "bangla": "আবার বলুন",
+      "englishGloss": "repeat",
+      "category": "meeting",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    },
+    {
+      "id": "finished",
+      "bangla": "শেষ",
+      "englishGloss": "finished",
+      "category": "meeting",
+      "signType": "unknown",
+      "handUsage": "unknown",
+      "referenceUrl": null,
+      "reviewStatus": "provisional",
+      "reviewerNotes": "Requires researcher/supervisor or qualified BdSL signer review.",
+      "active": false
+    }
+  ]
+}

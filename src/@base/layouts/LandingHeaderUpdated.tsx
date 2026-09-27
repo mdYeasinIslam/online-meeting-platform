@@ -35,6 +35,7 @@ export default function LandingHeaderUpdated() {
         </Link>
         {user ? (
           <>
+            <Link href="/research/data-collection" className="hover:underline">Data collection</Link>
             <button className="flex items-center justify-center gap-2 rounded-full border w-6 h-6 bg-gray-700">
               <span className=" ">{user.displayName.slice(0, 1)}</span>
             </button>
