@@ -5,6 +5,7 @@ import { api } from "@/src/@libs/api/client";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
 import CreateMeetingForm from "./CreateMeetingForm";
 import JoinMeetingForm from "./JoinMeetingForm";
+import EndMeetingControl from "./EndMeetingControl";
 import CopyInviteButton from "./CopyInviteButton";
 import type { MeetingList } from "../types";
 export default function Dashboard() {
@@ -80,7 +81,8 @@ export default function Dashboard() {
                     participants
                   </p>
                 </div>
-                <CopyInviteButton roomId={meeting.roomId} />
+                {meeting.status === "active" && <CopyInviteButton roomId={meeting.roomId} />}
+                {meeting.status === "ending" && <EndMeetingControl roomId={meeting.roomId} onEnded={() => setRetry(value => value + 1)} />}
               </li>
             ))}
           </ul>

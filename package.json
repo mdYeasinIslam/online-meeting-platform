@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
-    "test:e2e": "playwright test --grep-invert \"join-meeting.spec.ts|research-collection.spec.ts\" && playwright test join-meeting.spec.ts && playwright test research-collection.spec.ts",
+    "test:e2e": "playwright test --grep-invert \"join-meeting.spec.ts|research-collection.spec.ts|end-meeting.spec.ts\" && playwright test join-meeting.spec.ts && playwright test research-collection.spec.ts && playwright test end-meeting.spec.ts",
     "dataset": "node --experimental-strip-types scripts/dataset.mts"
   },
   "dependencies": {

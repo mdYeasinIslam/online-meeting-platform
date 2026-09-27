@@ -60,7 +60,7 @@ export default function JoinMeetingForm() {
       if (controller.signal.aborted) return;
       if (!meeting || meeting.roomId !== parsed.roomId)
         throw new Error("Invalid meeting response");
-      if (meeting.status === "ended") throw new ApiError(410, "Meeting ended");
+      if (meeting.status === "ended" || meeting.status === "ending") throw new ApiError(410, "Meeting unavailable", meeting.status === "ending" ? "MEETING_ENDING" : "MEETING_ENDED");
       if (meeting.status !== "active")
         throw new Error("Invalid meeting status");
       router.push(destination);
@@ -79,7 +79,9 @@ export default function JoinMeetingForm() {
           status === 404
             ? "Meeting not found. Check the invitation and try again."
             : status === 410
-              ? "This meeting has ended and can no longer be joined."
+              ? failure instanceof ApiError && failure.code === "MEETING_ENDING"
+                ? "This meeting is ending and cannot be joined."
+                : "This meeting has ended. You can no longer join using this meeting link."
               : status === 400
                 ? "Enter a valid meeting link or ID copied from an invitation."
                 : status === 0 || (status !== undefined && status >= 500)

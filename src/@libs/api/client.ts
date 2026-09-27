@@ -6,6 +6,8 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
+    public code?: string,
+    public canEnd = false,
   ) {
     super(message);
   }
@@ -26,6 +28,8 @@ async function readResponse<T>(
     throw new ApiError(
       response.status,
       typeof data.error === "string" ? data.error : "The request failed.",
+      typeof data.code === "string" ? data.code : undefined,
+      data.canEnd === true,
     );
   }
   return data as T;
