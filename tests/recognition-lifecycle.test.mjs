@@ -6,18 +6,22 @@ test('one inference loop, one load across pause/resume, cleanup never stops the 
  const originalDocument=globalThis.document, originalMedia=globalThis.HTMLMediaElement;
  globalThis.document={createElement:()=>({readyState:2,async play(){},pause(){},remove(){},srcObject:null})};
  globalThis.HTMLMediaElement={HAVE_CURRENT_DATA:2};
- let loads=0,predictions=0,disposed=0,trackerLoads=0,closed=0,active=0,maxActive=0,attached=0,detached=0;
+ let loads=0,predictions=0,resets=0,disposed=0,trackerLoads=0,closed=0,active=0,maxActive=0,attached=0,detached=0;
  let results;
- const engine={kind:'static-alphabet',async load(){loads++;},async predict(frame){predictions++;return {state:'prediction',text:'ক',confidence:0.99,timestamp:frame.timestamp};},dispose(){disposed++;}};
+ const engine={kind:'static-alphabet',async load(){loads++;},async predict(frame){predictions++;return {state:'prediction',text:'ক',confidence:0.99,timestamp:frame.timestamp};},reset(){resets++;},dispose(){disposed++;}};
  const tracker={async initialize(){trackerLoads++;},setOptions(){},onResults(callback){results=callback;},async send(){active++;maxActive=Math.max(maxActive,active);await sleep(5);results({multiHandLandmarks:[],multiHandedness:[]});active--;},async close(){closed++;}};
  const track={isMuted:false,mediaStreamTrack:{readyState:'live'},attach(){attached++;},detach(){detached++;},stop(){assert.fail('Recognition must never stop LiveKit camera');}};
- const accepted=[];const session=new BrowserSignSession(()=>{},item=>accepted.push(item),engine,async()=>tracker);
+ const accepted=[],statuses=[];const session=new BrowserSignSession(status=>statuses.push(status),item=>accepted.push(item),engine,async()=>tracker);
  try {
   session.start(track);session.start(track);session.start(track);
   await sleep(1200);
   assert.equal(maxActive,1);assert.equal(loads,1);assert.equal(trackerLoads,1);assert.equal(accepted.length,1);
   session.stop();const count=predictions;await sleep(150);assert.equal(predictions,count);
   session.start(track);await sleep(150);assert.ok(predictions>count);assert.equal(loads,1);assert.equal(trackerLoads,1);
+  const resetsBefore=resets; track.isMuted=true; await sleep(150);
+  assert.equal(statuses.at(-1).phase,'paused'); assert.ok(resets>resetsBefore);
+  assert.equal(statuses.at(-1).rawLabel,undefined); const paused=predictions; await sleep(150); assert.equal(predictions,paused);
+  track.isMuted=false; session.start(track); await sleep(150); assert.equal(loads,1);
   await session.dispose();const final=predictions;await sleep(150);assert.equal(predictions,final);assert.equal(disposed,1);assert.equal(closed,1);assert.equal(attached,detached);
  } finally {await session.dispose();globalThis.document=originalDocument;globalThis.HTMLMediaElement=originalMedia;}
 });

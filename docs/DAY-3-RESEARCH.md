@@ -23,13 +23,13 @@ The exported Sequential architecture is:
 
 The artifact reports Keras 3.13.2 and TensorFlow.js Converter 4.22.0. Its training configuration records Adam (learning rate approximately 0.001) and sparse categorical cross-entropy. These metadata do not establish which dataset, split, epochs, augmentation, signer population or actual training procedure produced the model. Those details are unknown and require confirmation. No accuracy or generalization claims can be inferred from the artifact.
 
-The exact trained class labels, in index order, are:
+The runtime class labels, in index order, are (original training index order is unverified):
 
 ```text
 অ আ ই ঈ উ ঊ ঋ এ ঐ ও ঔ ক খ গ ঘ ঙ চ ছ জ ঝ ঞ ট ঠ ড ঢ ণ ত থ দ ধ ন প ফ ব ভ ম
 ```
 
-There are 36 labels, with no trained space, delete or confirm gestures. Editing/sending uses explicit buttons. The draft is recognized output, not a manually typed sign-caption field.
+There are 36 labels, with no runtime labels for space, delete or confirm gestures. Editing/sending uses explicit buttons. The draft is recognized output, not a manually typed sign-caption field.
 
 ### Pre-existing loader defect corrected
 
@@ -152,3 +152,7 @@ Browser tests exercise real MediaPipe/model loading on a synthetic camera, confi
 ## Future temporal integration boundary
 
 `SignRecognitionEngine` already accepts typed hand/optional-pose frames and may retain a temporal buffer internally. A future engine can emit accepted words/tokens into the same draft/controller and transport without making the engine call LiveKit or changing the caption UI. The future speech source can use the same source-aware publishing interface. Choosing dataset vocabulary, two-hand/pose features, temporal segmentation, signer-separated splits, evaluation methodology and the temporal architecture is Day-4 research/development work; training and sentence-recognition claims were not added here.
+
+## Day-4.1 evidence update
+
+See [the static diagnosis report](DAY-4.1-DIAGNOSIS.md) and its deterministic probe artifact. Training preprocessing and label provenance remain unknown; the model export does not establish them. Day-4.1 replaces first-detection selection with geometric continuity, rejects numerically degenerate input, and adds opt-in diagnostics while preserving the normalization formula, model weights and thresholds.

@@ -60,7 +60,7 @@ export class BrowserSignSession {
     this.running = false;
     this.generation++;
     clearTimeout(this.timer);
-    this.detach(); this.stabilizer.reset(); this.acceptedLabel = "";
+    this.detach(); this.engine.reset?.(); this.stabilizer.reset(); this.acceptedLabel = "";
     if (!this.disposed) this.status({ phase });
   }
   start(track: LocalVideoTrack) {
@@ -105,6 +105,7 @@ export class BrowserSignSession {
     if (!active() || !video || !this.hands) return;
     if (!this.track || this.track.isMuted || this.track.mediaStreamTrack.readyState !== "live") { this.stop("paused"); return; }
     const started = performance.now();
+    let stage: "detector" | "model" = "detector";
     try {
       if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) { this.schedule(generation, 1000 / RECOGNITION_CONFIG.targetFps); return; }
       this.latestResults = undefined;
@@ -112,7 +113,8 @@ export class BrowserSignSession {
       if (!active()) return;
       const results = this.latestResults as Results | undefined;
       if (!results) throw new Error("Hand tracker returned no result");
-      const prediction = await this.engine.predict({ timestamp: Date.now(), hands: (results.multiHandLandmarks ?? []).map((landmarks, index) => ({ landmarks, side: results.multiHandedness?.[index]?.label === "Left" ? "left" : results.multiHandedness?.[index]?.label === "Right" ? "right" : "unknown" })) });
+      stage = "model";
+      const prediction = await this.engine.predict({ timestamp: Date.now(), hands: (results.multiHandLandmarks ?? []).map((landmarks, index) => ({ landmarks, confidence: results.multiHandedness?.[index]?.score, side: results.multiHandedness?.[index]?.label === "Left" ? "left" : results.multiHandedness?.[index]?.label === "Right" ? "right" : "unknown" })) });
       if (!active()) return;
       const accepted = this.stabilizer.push(prediction);
       if (accepted) { this.acceptedLabel = accepted.text; this.accept(accepted); }
@@ -120,12 +122,12 @@ export class BrowserSignSession {
       const phase = prediction.state === "no-hand" ? "no-hand" : prediction.state !== "prediction" || prediction.confidence < RECOGNITION_CONFIG.stabilizer.confidenceThreshold ? "unknown" : "recognizing";
       const now = performance.now();
       if (accepted || phase !== this.lastPhase || now - this.lastUiUpdate >= RECOGNITION_CONFIG.uiUpdateIntervalMs) {
-        this.status({ phase, rawLabel: prediction.state === "prediction" ? prediction.text : undefined, confidence: prediction.state === "prediction" ? prediction.confidence : undefined, acceptedLabel: this.acceptedLabel, inferenceMs: now - started, effectiveFps: this.frameCount * 1000 / (now - this.startedAt) });
+        this.status({ phase, diagnostics: prediction.diagnostics, stabilization: this.stabilizer.snapshot(), frame: { timestamp: prediction.timestamp, width: video.videoWidth, height: video.videoHeight, readyState: video.readyState, targetFps: RECOGNITION_CONFIG.targetFps }, rawLabel: prediction.state === "prediction" ? prediction.text : undefined, confidence: prediction.state === "prediction" ? prediction.confidence : undefined, acceptedLabel: this.acceptedLabel, inferenceMs: now - started, effectiveFps: this.frameCount * 1000 / (now - this.startedAt) });
         this.lastUiUpdate = now; this.lastPhase = phase;
       }
       if (active()) this.schedule(generation, Math.max(0, 1000 / RECOGNITION_CONFIG.targetFps - (performance.now() - started)));
     } catch {
-      if (active()) { this.stop(); this.status({ phase: "inference-error" }); }
+      if (active()) { this.stop(); this.status({ phase: stage === "detector" ? "detector-error" : "inference-error" }); }
     }
   }
   dispose(): Promise<void> {

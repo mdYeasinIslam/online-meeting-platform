@@ -1,3 +1,5 @@
+import type { PredictionDiagnostics } from "./diagnostics";
+import type { StabilizerSnapshot } from "./stabilizer";
 import { DEFAULT_STABILIZER_CONFIG } from "./stabilizer.ts";
 export const RECOGNITION_CONFIG = {
   targetFps: 10,
@@ -6,9 +8,12 @@ export const RECOGNITION_CONFIG = {
   hands: { maxNumHands: 2, modelComplexity: 1 as const, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 },
   stabilizer: DEFAULT_STABILIZER_CONFIG,
 };
-export type RecognitionPhase = "idle" | "loading-mediapipe" | "loading-model" | "ready" | "recognizing" | "no-hand" | "unknown" | "paused" | "asset-missing" | "initialization-error" | "inference-error" | "stopped";
+export type RecognitionPhase = "idle" | "loading-mediapipe" | "loading-model" | "ready" | "recognizing" | "no-hand" | "unknown" | "paused" | "asset-missing" | "initialization-error" | "inference-error" | "detector-error" | "stopped";
 export interface RecognitionStatus {
   phase: RecognitionPhase;
+  diagnostics?: PredictionDiagnostics;
+  stabilization?: StabilizerSnapshot;
+  frame?: { timestamp: number; width: number; height: number; readyState: number; targetFps: number };
   rawLabel?: string; confidence?: number; acceptedLabel?: string;
   inferenceMs?: number; effectiveFps?: number;
 }
@@ -23,6 +28,7 @@ export const RECOGNITION_MESSAGES: Record<RecognitionPhase, string> = {
   paused: "Recognition paused. Reconnect and enable your camera to resume; no additional camera access is requested.",
   "asset-missing": "A model asset is missing. Check the model files, then stop and restart recognition.",
   "initialization-error": "Recognition could not initialize. Check network access to model and MediaPipe assets, then stop and restart.",
+  "detector-error": "Hand detection failed. Stop and restart recognition. Your meeting camera remains on.",
   "inference-error": "Recognition failed. Stop and restart recognition. Your meeting camera remains on.",
   stopped: "Recognition stopped. Your meeting camera is unchanged.",
 };

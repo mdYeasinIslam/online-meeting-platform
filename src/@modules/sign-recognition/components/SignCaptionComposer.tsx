@@ -1,4 +1,5 @@
 "use client";
+import RecognitionDiagnostics from "./RecognitionDiagnostics";
 import { useState } from "react";
 import { CAPTION_CONFIG, captionTextLength } from "../../captions/config";
 import { RECOGNITION_MESSAGES } from "../config";
@@ -21,6 +22,6 @@ export default function SignCaptionComposer({ composer, connected }: { composer:
     {composer.sent && <p role="status" className="mt-2">Caption sent. Only participants connected at send time can receive it.</p>}
     <p className="mt-3 text-xs text-slate-300">Camera off or a lost connection pauses inference. Recognition resumes automatically when the camera and connection return while recognition is enabled. Stop sign recognition keeps your camera on.</p>
     <label className="mt-3 flex items-center gap-2 text-sm"><input type="checkbox" checked={debug} onChange={event => setDebug(event.target.checked)} />Show local recognition diagnostics</label>
-    {debug && <dl className="mt-2 grid grid-cols-2 gap-1 text-sm" aria-label="Recognition diagnostics"><dt>Model state</dt><dd>{composer.status.phase}</dd><dt>Raw label</dt><dd lang="bn">{composer.status.rawLabel || "—"}</dd><dt>Confidence</dt><dd>{composer.status.confidence === undefined ? "—" : `${(composer.status.confidence * 100).toFixed(1)}%`}</dd><dt>Last accepted label</dt><dd lang="bn">{composer.status.acceptedLabel || "—"}</dd><dt>Last frame pipeline latency</dt><dd>{composer.status.inferenceMs?.toFixed(1) ?? "—"} ms</dd><dt>Effective inference FPS</dt><dd>{composer.status.effectiveFps?.toFixed(1) ?? "—"}</dd></dl>}
+    {debug && <RecognitionDiagnostics status={composer.status} previewMirrored={false} />}
   </section>;
 }

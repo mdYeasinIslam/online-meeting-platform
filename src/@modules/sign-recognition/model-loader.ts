@@ -13,11 +13,19 @@ export async function loadStaticLayersModel(handler: tf.io.IOHandler = tf.io.htt
   }
   if (!artifacts.modelTopology || !artifacts.weightSpecs?.length || !artifacts.weightData) throw new Error("Model topology or trained weights are missing.");
   const specs = artifacts.weightSpecs.map(weight => ({ ...weight, name: weight.name.replace(/^sequential\//, "") }));
+  if (new Set(specs.map(weight => weight.name)).size !== specs.length) throw new Error("Duplicate model weight names.");
+  const byteLength = Array.isArray(artifacts.weightData) ? artifacts.weightData.reduce((sum, data) => sum + data.byteLength, 0) : artifacts.weightData.byteLength;
+  if (specs.some(weight => weight.dtype !== "float32") || byteLength !== specs.reduce((sum, weight) => sum + weight.shape.reduce((a, b) => a * b, 1) * 4, 0)) throw new Error("Unexpected weight dtype or byte length.");
   // Own the model before strict weight assignment, so failures can dispose it too.
   const model = await tf.loadLayersModel(tf.io.fromMemory({ modelTopology: artifacts.modelTopology }));
   let decoded: tf.NamedTensorMap | undefined;
   try {
     decoded = tf.tidy(() => tf.io.decodeWeights(artifacts.weightData!, specs));
+    if (Object.keys(decoded).length !== model.weights.length) throw new Error("Unexpected weight tensor count.");
+    for (const weight of model.weights) {
+      const tensor = decoded[weight.originalName];
+      if (!tensor || JSON.stringify(tensor.shape) !== JSON.stringify(weight.shape) || !Array.from(tensor.dataSync()).every(Number.isFinite)) throw new Error("Missing, incompatible or non-finite model weight.");
+    }
     model.loadWeights(decoded, true);
     return model;
   } catch (error) { model.dispose(); throw error; }
