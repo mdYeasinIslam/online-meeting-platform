@@ -1,0 +1,93 @@
+{
+  "contractVersion": 1,
+  "status": "blocked",
+  "deployable": false,
+  "modelVersion": "temporal-baseline-v1",
+  "vocabularyVersion": "bdsl-provisional-1",
+  "checksums": {
+    "vocabulary": "5660887f8691def59c6dce06f4e0b60332618cc4141c130c8f246fc45a5a6080",
+    "split": null
+  },
+  "labels": [],
+  "input": {
+    "dtype": "float32",
+    "shape": [
+      null,
+      32,
+      128
+    ],
+    "sequenceLength": 32,
+    "featuresPerFrame": 128,
+    "layout": {
+      "left": "0..62: x0,y0,z0,...,x20,y20,z20",
+      "right": "63..125: x0,y0,z0,...,x20,y20,z20",
+      "leftPresent": 126,
+      "rightPresent": 127
+    }
+  },
+  "preprocessing": {
+    "schemaVersion": 1,
+    "preprocessingVersion": "bdsl-temporal-v1",
+    "modelVersion": "temporal-baseline-v1",
+    "seed": 4105,
+    "splitSeed": "day5-v1",
+    "splitRatios": [
+      0.7,
+      0.15,
+      0.15
+    ],
+    "sequenceLength": 32,
+    "maxInterpolationGapMs": 250,
+    "minimumScale": 1e-08,
+    "minimumResampledValidFrames": 8,
+    "qualityPolicy": "accepted-only",
+    "normalization": "shared-sample-geometric",
+    "datasetNormalization": "none",
+    "augmentation": {
+      "enabled": false,
+      "coordinateJitter": 0.005
+    },
+    "units": 32,
+    "denseUnits": 16,
+    "dropout": 0.2,
+    "learningRate": 0.001,
+    "batchSize": 8,
+    "epochs": 40,
+    "patience": 6,
+    "minDelta": 0.0001,
+    "selection": "validation-loss",
+    "classWeights": false,
+    "exportTolerance": 0.0001
+  },
+  "normalizationState": {
+    "method": "none",
+    "fittedSampleIds": [],
+    "note": "No dataset means/std are fitted; each clip uses its own shared geometric origin/scale."
+  },
+  "geometric": {
+    "origin": "mean wrist xyz of reliably assigned hands in first valid frame",
+    "scale": "maximum absolute coordinate relative to this shared origin across every assigned point in the complete clip",
+    "depthLimit": "MediaPipe z is wrist-relative per hand, not calibrated inter-hand depth"
+  },
+  "missing": "zero coordinates plus per-hand 0 mask; all-zero rows are masked by the RNN",
+  "resampling": "inclusive linspace(0,durationMs,T), linear between adjacent valid observations only; gaps beyond configured limit and outside observed range are zero/masked; duplicate or unordered timestamps rejected",
+  "handedness": "Day-4 fixed physical slots: raw Right -> left, raw Left -> right for unmirrored pixels; confidence >=0.8; unassigned observations are not imputed",
+  "mirroring": "no coordinate flips; CSS preview only",
+  "output": {
+    "shape": [
+      null,
+      0
+    ],
+    "activation": "softmax",
+    "interpretation": "uncalibrated relative class probabilities, not proof of correctness; no meeting acceptance threshold selected"
+  },
+  "unsupported": [
+    "unreviewed labels",
+    "continuous sentences",
+    "automatic sign boundaries",
+    "live meeting temporal inference",
+    "unseen vocabulary",
+    "mirrored input pixels",
+    "uncertain handedness imputation"
+  ]
+}

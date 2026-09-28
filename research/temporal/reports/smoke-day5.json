@@ -1,0 +1,33 @@
+{
+  "kind": "synthetic-technical-smoke-only",
+  "thesisModel": false,
+  "realParticipants": 0,
+  "realSamples": 0,
+  "observations": [
+    {
+      "architecture": "gru",
+      "parametersForTwoSyntheticClasses": 16018,
+      "trainingMs": 568.154585,
+      "checkpointBytes": 64072,
+      "forward": "passed",
+      "oneEpoch": "passed",
+      "checkpointRoundTrip": "passed",
+      "metricsExecution": "passed"
+    },
+    {
+      "architecture": "lstm",
+      "parametersForTwoSyntheticClasses": 21170,
+      "trainingMs": 339.3040259999998,
+      "checkpointBytes": 84680,
+      "forward": "passed",
+      "oneEpoch": "passed",
+      "checkpointRoundTrip": "passed",
+      "metricsExecution": "passed"
+    }
+  ],
+  "syntheticMetricsPublished": false,
+  "exportAsThesisModel": "blocked",
+  "tensorsBefore": 0,
+  "tensorsAfter": 0,
+  "directory": "research/temporal/generated/synthetic-smoke-7787893e-8285-4756-b32b-6cbe600b3320"
+}

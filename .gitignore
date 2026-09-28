@@ -56,3 +56,6 @@ next-env.d.ts
 !/dataset/reports/.gitkeep
 /dataset/manifests/*.local.json
 /bdsl-landmarks-*.json
+
+# Day-5 private derived tensors, checkpoints, exports, synthetic smoke artifacts.
+/research/temporal/generated/

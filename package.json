@@ -11,6 +11,8 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:e2e": "playwright test --grep-invert \"join-meeting.spec.ts|research-collection.spec.ts|end-meeting.spec.ts\" && playwright test join-meeting.spec.ts && playwright test research-collection.spec.ts && playwright test end-meeting.spec.ts",
     "diagnose:static": "node --experimental-strip-types scripts/static-diagnostics.mts",
+    "temporal": "node --experimental-strip-types research/temporal/cli.mts",
+    "test:temporal": "node --experimental-strip-types --test research/temporal/tests/*.test.mjs",
     "dataset": "node --experimental-strip-types scripts/dataset.mts"
   },
   "dependencies": {

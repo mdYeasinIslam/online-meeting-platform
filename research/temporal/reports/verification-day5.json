@@ -1,0 +1,74 @@
+{
+  "verifiedAt": "2026-09-28T17:30:56.365699+00:00",
+  "scope": "Day-5 software verification; no real temporal model or research metrics",
+  "environment": {
+    "node": "v22.16.0",
+    "tensorflowjs": "4.22.0",
+    "backend": "cpu",
+    "packageLockSha256": "a1fea3ffa4e27209fdcdacf9dab15a458f352a9a997525e26804b34436477de1"
+  },
+  "client": {
+    "dependencyInspection": {
+      "command": "npm ls --depth=0",
+      "exitCode": 0,
+      "note": "Existing extraneous @emnapi/runtime@1.8.1; no missing/invalid direct dependencies"
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "tests": {
+      "passed": 102,
+      "failed": 0,
+      "skipped": 0
+    },
+    "productionBuild": "passed"
+  },
+  "server": {
+    "filesChanged": false,
+    "typecheck": "passed",
+    "lint": "passed",
+    "tests": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    "build": "passed",
+    "note": "Test harness used installed MongoDB 8.0.10; requested version warning 7.0.24"
+  },
+  "research": {
+    "command": "npm run test:temporal",
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0,
+    "environment": "passed",
+    "vocabularyInspection": "passed: 12 provisional; 0 reviewed, 0 active",
+    "datasetValidation": "passed: empty corpus",
+    "datasetStatistics": {
+      "realParticipants": 0,
+      "realSessions": 0,
+      "realSamples": 0
+    },
+    "readinessExitCode": 2,
+    "splitExitCode": 1,
+    "expectedBlockingReason": "No reviewed active vocabulary or real samples; fewer than three signers",
+    "technicalSmoke": "passed; see smoke-day5.json",
+    "formalTraining": "blocked",
+    "formalEvaluation": "blocked",
+    "realExport": "blocked",
+    "crossRuntimeComparison": "not run: no real export"
+  },
+  "staticModelSha256": {
+    "model.json": "56469e16205f34b25f06e3872910423da4aa93017adab3cbff93f4764a7245bb",
+    "group1-shard1of1.bin": "133843f29e0b0315d6afd522530804ac9dd3938ffcc9d827a4185bd5d3d54098",
+    "labels.json": "1fc0d04c17b1173101465703818594ec6da0ffd92f5a58278752c894241c68db"
+  },
+  "otherChecks": {
+    "gitDiffCheck": "passed",
+    "generatedCheckpointGitIgnore": "passed",
+    "rawDataModified": false,
+    "vocabularyActivated": false,
+    "meetingIntegration": false,
+    "browserUiTests": "not rerun: no UI/runtime change",
+    "deployment": "not performed",
+    "syntheticResearchMetricsPublished": false
+  }
+}
