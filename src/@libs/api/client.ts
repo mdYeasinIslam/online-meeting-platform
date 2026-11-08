@@ -1,10 +1,13 @@
 export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api"
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://online-meeting-platform-server.onrender.com/api"
 ).replace(/\/$/, "");
 export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
+    public code?: string,
+    public canEnd = false,
   ) {
     super(message);
   }
@@ -25,9 +28,27 @@ async function readResponse<T>(
     throw new ApiError(
       response.status,
       typeof data.error === "string" ? data.error : "The request failed.",
+      typeof data.code === "string" ? data.code : undefined,
+      data.canEnd === true,
     );
   }
   return data as T;
+}
+
+// copy from gemini ---------------
+
+let cachedCsrfToken: string | null = null;
+
+async function getCsrfToken(): Promise<string> {
+  if (cachedCsrfToken) return cachedCsrfToken;
+
+  const response = await fetch(`${API_BASE_URL}/auth/csrf`, {
+    credentials: "include",
+    cache: "no-store",
+  });
+  const data = await readResponse<{ csrfToken: string }>(response, false);
+  cachedCsrfToken = data.csrfToken;
+  return cachedCsrfToken;
 }
 export async function api<T>(
   path: string,
@@ -35,6 +56,7 @@ export async function api<T>(
     method?: "GET" | "POST";
     body?: unknown;
     signal?: AbortSignal;
+    notifyExpired?: boolean;
   } = {},
 ): Promise<T> {
   const method = options.method ?? "GET";
@@ -42,29 +64,37 @@ export async function api<T>(
   const signal = options.signal
     ? AbortSignal.any([options.signal, AbortSignal.timeout(15000)])
     : AbortSignal.timeout(15000);
+
   try {
     if (method === "POST") {
-      // Fetch per mutation so login/logout session regeneration cannot leave a stale token cached.
-      const response = await fetch(`${API_BASE_URL}/auth/csrf`, {
-        credentials: "include",
-        cache: "no-store",
-        signal,
-      });
-      const { csrfToken } = await readResponse<{ csrfToken: string }>(response);
+      const csrfToken = await getCsrfToken();
+      // Provide both casing formats so server middleware catches it regardless
+      headers["x-csrf-token"] = csrfToken;
       headers["X-CSRF-Token"] = csrfToken;
       headers["Content-Type"] = "application/json";
     }
+
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      method,
+      headers,
+      credentials: "include", // CRITICAL for sending cookies
+      cache: "no-store",
+      signal,
+      body: method === "POST" ? JSON.stringify(options.body ?? {}) : undefined,
+    });
+
+    // If login or register succeeds, invalidate cached token so subsequent requests get fresh session token
+    if (
+      path.includes("/auth/login") ||
+      path.includes("/auth/register") ||
+      path.includes("/auth/logout")
+    ) {
+      cachedCsrfToken = null;
+    }
+
     return await readResponse<T>(
-      await fetch(`${API_BASE_URL}${path}`, {
-        method,
-        headers,
-        credentials: "include",
-        cache: "no-store",
-        signal,
-        body:
-          method === "POST" ? JSON.stringify(options.body ?? {}) : undefined,
-      }),
-      path !== "/auth/me" && path !== "/auth/login",
+      response,
+      options.notifyExpired ?? (path !== "/auth/me" && path !== "/auth/login"),
     );
   } catch (error) {
     if (error instanceof ApiError || options.signal?.aborted) throw error;
@@ -74,3 +104,54 @@ export async function api<T>(
     );
   }
 }
+//------------------------------------
+
+// export async function api<T>(
+//   path: string,
+//   options: {
+//     method?: "GET" | "POST";
+//     body?: unknown;
+//     signal?: AbortSignal;
+//     // A caller showing its own sign-in link can preserve an intended meeting.
+//     notifyExpired?: boolean;
+//   } = {},
+// ): Promise<T> {
+//   const method = options.method ?? "GET";
+//   const headers: Record<string, string> = {};
+//   const signal = options.signal
+//     ? AbortSignal.any([options.signal, AbortSignal.timeout(15000)])
+//     : AbortSignal.timeout(15000);
+//   try {
+//     if (method === "POST") {
+//       // Fetch per mutation so login/logout session regeneration cannot leave a stale token cached.
+//       const response = await fetch(`${API_BASE_URL}/auth/csrf`, {
+//         credentials: "include",
+//         cache: "no-store",
+//         signal,
+//       });                             
+//       const { csrfToken } = await readResponse<{ csrfToken: string }>(response);
+//       headers["X-CSRF-Token"] = csrfToken;
+//       headers["Content-Type"] = "application/json";
+//     }
+//     return await readResponse<T>(
+//       await fetch(`${API_BASE_URL}${path}`, {
+//         method,
+//         headers,
+//         credentials: "include",
+//         cache: "no-store",
+//         signal,
+//         body:
+//           method === "POST" ? JSON.stringify(options.body ?? {}) : undefined,
+//       }),
+//       options.notifyExpired ?? (path !== "/auth/me" && path !== "/auth/login"),
+//     );
+//   } catch (error) {
+//     if (error instanceof ApiError || options.signal?.aborted) throw error;
+//     throw new ApiError(
+//       0,
+//       "Cannot reach the server. Check your connection and that the Express server is running.",
+//     );
+//   }
+// }
+
+

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { api } from "@/src/@libs/api/client";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
 import CreateMeetingForm from "./CreateMeetingForm";
+import JoinMeetingForm from "./JoinMeetingForm";
+import EndMeetingControl from "./EndMeetingControl";
 import CopyInviteButton from "./CopyInviteButton";
 import type { MeetingList } from "../types";
 export default function Dashboard() {
@@ -30,7 +32,10 @@ export default function Dashboard() {
     <section className="mx-auto max-w-5xl p-6">
       <h1 className="text-3xl font-bold">Your meetings</h1>
       <p className="mt-3">Welcome, {user?.displayName}.</p>
-      <CreateMeetingForm />
+      <div className="flex  items-end gap-x-">
+        <CreateMeetingForm />
+        <JoinMeetingForm />
+      </div>
       <h2 className="text-xl font-semibold">Meetings you host</h2>
       {error ? (
         <div role="alert" className="my-4">
@@ -76,7 +81,8 @@ export default function Dashboard() {
                     participants
                   </p>
                 </div>
-                <CopyInviteButton roomId={meeting.roomId} />
+                {meeting.status === "active" && <CopyInviteButton roomId={meeting.roomId} />}
+                {meeting.status === "ending" && <EndMeetingControl roomId={meeting.roomId} onEnded={() => setRetry(value => value + 1)} />}
               </li>
             ))}
           </ul>

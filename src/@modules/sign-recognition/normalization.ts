@@ -1,4 +1,4 @@
-// 1. Helper function: Normalize Landmarks (Must match Python logic exactly)
+// Preserved browser normalization. Compatibility with original training is unverified.
   export function normalizeLandmarks(
     landmarks: Array<{ x: number; y: number; z: number }>,
   ): number[] {

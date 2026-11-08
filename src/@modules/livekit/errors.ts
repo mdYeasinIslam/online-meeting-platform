@@ -14,7 +14,7 @@ export function connectionMessage(error: unknown): string {
 
 export function disconnectedMessage(reason?: DisconnectReason): string {
   if (reason === DisconnectReason.DUPLICATE_IDENTITY) return "Your account joined this meeting in another tab or device. Use a different account for each participant.";
-  if (reason === DisconnectReason.ROOM_DELETED) return "The LiveKit room was closed. Return to the dashboard or try joining again.";
+  if (reason === DisconnectReason.ROOM_DELETED) return "This meeting has ended. You can no longer join using this meeting link.";
   return "You were disconnected from the meeting. Check your connection and try joining again.";
 }
 
@@ -24,4 +24,8 @@ export function deviceMessage(device: "Camera" | "Microphone", error: unknown): 
   if (name === "NotFoundError" || name === "DevicesNotFoundError") return `No ${device.toLowerCase()} was found. Connect a device and try again, or keep it off.`;
   if (name === "NotReadableError" || name === "TrackStartError") return `${device} is unavailable or in use by another application. Close that application and try again.`;
   return `${device} could not start. Check device access and use HTTPS or localhost. You can stay in the meeting with it off.`;
+}
+
+export function isMeetingEnded(reason?: DisconnectReason): boolean {
+  return reason === DisconnectReason.ROOM_DELETED;
 }

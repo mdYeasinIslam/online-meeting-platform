@@ -55,7 +55,11 @@ Joining fetches fresh room-scoped credentials from Express and creates one LiveK
 
 Use HTTPS or localhost for browser camera/microphone access. For tests on another device, a localhost invite points to that device itself; use a reachable HTTPS frontend and the corresponding configured API/CORS origin.
 
-Caption types, feed, panel and `SignRecognitionEngine` are unchanged. The meeting's sign control is explicitly disabled. The local Room context supplies the existing camera publication for future recognition; do not open a second camera stream. A Day-3 transport adapter can feed validated caption events into the existing feed, deriving attribution from the authenticated LiveKit sender. No caption protocol, mock captions, speech recognition or continuous sign recognition is implemented today.
+Day-3 connects the existing sign engine to the same local camera. Enable **Start sign recognition**, hold a supported static alphabet steady, inspect the local recognized draft, then use **Send caption** to share it. Backspace removes a whole token; Clear edits locally. Recognition is opt-in. Camera off pauses it; camera/connection recovery resumes it while enabled. Stop does not turn off the meeting camera.
+
+Confirmed captions use versioned, validated LiveKit reliable data. Attribution comes from the authenticated sender, with bounded history, deduplication and rate limits. Captions are ephemeral: late joiners start empty, refresh clears local history, and nothing is stored in MongoDB. No speech recognition or continuous word/sentence model is implemented. The baseline weight loader now strictly assigns the preserved Keras weights rather than ignoring their name-prefix mismatch.
+
+See [Day-3 research notes](docs/DAY-3-RESEARCH.md) for actual model details, protocol limits, privacy, stabilization and future temporal integration. See [Day-3 delivery report](docs/DAY-3-DELIVERY.md) for verification and the manual two-browser test.
 
 ## Verification commands
 
@@ -63,11 +67,11 @@ Caption types, feed, panel and `SignRecognitionEngine` are unchanged. The meetin
 npm run typecheck
 npm run lint
 npm test
-npm run build
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api npm run build
 npm run test:e2e
 ```
 
-The browser test requires the server's dev dependencies and free ports 3000/5000. It starts a temporary MongoDB database and test Express process; the default suite never uses the real server `.env`. It uses `/usr/bin/google-chrome` if present, otherwise install Playwright Chromium with `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
+The browser command runs the existing and dashboard-join groups in separate temporary fixture processes, keeping their combined registrations within the unchanged authentication rate limit. The browser test requires the server's dev dependencies and free ports 3000/5000. It starts a temporary MongoDB database and test Express process; the default suite never uses the real server `.env`. It uses `/usr/bin/google-chrome` if present, otherwise install Playwright Chromium with `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
 
 MongoDB tests use `/usr/bin/mongod` if present, otherwise mongodb-memory-server downloads a test binary. Override with `MONGOMS_SYSTEM_BINARY` if needed. `npm test` uses Node's experimental TypeScript stripping on Node 22.16.
 
@@ -80,12 +84,45 @@ npm start
 
 See [Day-1 delivery report](docs/DAY-1-DELIVERY.md) for the audit, exact changed files, verified results, dependency advisories and Day-2 work.
 
-For the opt-in real LiveKit suite, after building:
+For the opt-in real LiveKit suite, build with the isolated local API URL (this does not edit your real environment files):
 
 ```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api npm run build
 DAY2_LIVEKIT=1 npm run test:e2e
 ```
 
 This reads only the LiveKit configuration from the server environment, still uses an isolated MongoDB database, creates temporary LiveKit rooms, and deletes those rooms during shutdown. Chrome uses synthetic camera/microphone devices. It does not verify physical-device quality or human-audible speech. Keep ports 3000/5000 free; the test runner starts both applications.
 
-See [Day-2 delivery report](docs/DAY-2-DELIVERY.md) for current scope, verification and the exact two-browser manual test procedure. Day-1 documentation remains a historical record; the current Day-2 scope postpones caption transport to Day-3.
+See [Day-2 delivery report](docs/DAY-2-DELIVERY.md) for the historical conferencing milestone. The Day-3 reports above describe the current caption implementation and manual test procedure.
+
+## Day-3.5 dashboard join
+
+Use **Join meeting** beside the dashboard creation form to paste an invite URL, `/meeting/UUID` path, or raw meeting UUID. The existing authenticated Express API validates the meeting before opening its normal pre-join screen. Links always open within the current app, even when pasted from another hostname. Camera, microphone and LiveKit connect only after the existing pre-join action. See the [Day-3.5 delivery report](docs/DAY-3.5-DELIVERY.md) for changed files, error handling, tests and manual verification.
+
+## Day-4 temporal dataset collection
+
+Sign in and open **Data collection** (`/research/data-collection`). The supplied 12-word vocabulary is provisional and inactive: load a genuinely reviewed manifest before recording. Consent and pseudonymous participant/session IDs are required. The tool records timestamped hand landmarks into a bounded memory queue, with countdown, quality review, accept/discard, counts, and JSON import/export. It stores neither audio nor raw video and uploads no research data. Export before leaving the page.
+
+See [recording/consent protocol](docs/DAY-4-PROTOCOL.md), [raw schema and Day-5 feature proposal](docs/DAY-4-SCHEMA.md), and [Day-4 delivery report](docs/DAY-4-DELIVERY.md). Private dataset files belong under the ignored `dataset/raw/` and `dataset/exports/` directories; no temporal training or inference is added.
+
+```bash
+npm run dataset -- vocabulary
+npm run dataset -- validate --input dataset/raw --vocabulary dataset/manifests/vocabulary.local.json
+npm run dataset -- stats --input dataset/raw --vocabulary dataset/manifests/vocabulary.local.json --seed thesis-day5-1
+npm run dataset -- split --input dataset/raw --vocabulary dataset/manifests/vocabulary.local.json --seed thesis-day5-1 --ratios 0.7,0.15,0.15 --output dataset/splits/split.json
+```
+
+The reviewed `.local.json` file must be prepared by the researcher; it is not supplied as approved. Without real samples, use the default manifest to report an empty dataset. Split refuses fewer than three participants and keeps all sessions from each participant together.
+
+To test while your development API is already using port 5000, the isolated fixture supports a different port (production configuration is unchanged):
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5001/api npm run build
+E2E_API_PORT=5001 DAY4_CAMERA=1 npm run test:e2e
+# Include the existing actual LiveKit conferencing/caption regression suite:
+E2E_API_PORT=5001 DAY2_LIVEKIT=1 npm run test:e2e
+# Restore production output to the configured API after tests:
+npm run build
+```
+
+`DAY4_CAMERA=1` enables Chrome's synthetic camera for actual MediaPipe collection tests without requiring LiveKit. Synthetic test fixtures are not real signs or research observations. Test groups use separate temporary database/server fixtures to respect the existing authentication rate limit.

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ConnectionState, Room, RoomEvent } from "livekit-client";
 import { ApiError } from "@/src/@libs/api/client";
 import { createMeetingRoom, fetchJoinCredentials } from "./client";
-import { connectionMessage, deviceMessage, disconnectedMessage } from "./errors";
+import { connectionMessage, deviceMessage, disconnectedMessage, isMeetingEnded } from "./errors";
 
 export interface MediaChoices { microphone: boolean; camera: boolean; }
 type Attempt = { controller: AbortController; room?: Room; removeListeners?: () => void };
@@ -22,6 +22,9 @@ function release(attempt: Attempt) {
 export function useMeetingConnection(roomId: string) {
   const attemptRef = useRef<Attempt | null>(null);
   const joiningRef = useRef(false);
+  const terminalRef = useRef(false);
+  const [terminal, setTerminal] = useState<"ending" | "ended" | null>(null);
+  const [canEnd, setCanEnd] = useState(false);
   const [room, setRoom] = useState<Room | null>(null);
   const [state, setState] = useState<ConnectionState>(ConnectionState.Disconnected);
   const [joining, setJoining] = useState(false);
@@ -39,7 +42,7 @@ export function useMeetingConnection(roomId: string) {
   }, [roomId]);
 
   async function join(choices: MediaChoices) {
-    if (joiningRef.current) return;
+    if (joiningRef.current || terminalRef.current) return;
     joiningRef.current = true;
     if (attemptRef.current) release(attemptRef.current);
     const attempt: Attempt = { controller: new AbortController() };
@@ -55,7 +58,8 @@ export function useMeetingConnection(roomId: string) {
       let connected = false;
       const onState = (value: ConnectionState) => { if (active()) setState(value); };
       const onDisconnected = (reason?: Parameters<typeof disconnectedMessage>[0]) => {
-        if (active() && connected) {
+        if (active() && (connected || isMeetingEnded(reason))) {
+          if (isMeetingEnded(reason)) { terminalRef.current = true; setTerminal("ended"); }
           setError(disconnectedMessage(reason));
           release(attempt);
           attemptRef.current = null;
@@ -88,6 +92,9 @@ export function useMeetingConnection(roomId: string) {
       }));
     } catch (failure) {
       if (active()) {
+        if (failure instanceof ApiError && failure.status === 410) {
+          terminalRef.current = true; setTerminal(failure.code === "MEETING_ENDING" ? "ending" : "ended"); setCanEnd(failure.canEnd);
+        }
         setError(failure instanceof ApiError ? failure.message : connectionMessage(failure));
         release(attempt); setRoom(null); setState(ConnectionState.Disconnected);
       }
@@ -108,5 +115,11 @@ export function useMeetingConnection(roomId: string) {
     setRoom(null); setState(ConnectionState.Disconnected); setJoining(false);
     return true;
   }
-  return { room, state, joining, error, deviceErrors, join, leave };
+  function terminate() {
+    terminalRef.current = true;
+    if (attemptRef.current) release(attemptRef.current);
+    attemptRef.current = null; joiningRef.current = false;
+    setRoom(null); setJoining(false); setState(ConnectionState.Disconnected); setTerminal("ended");
+  }
+  return { room, state, joining, error, deviceErrors, terminal, canEnd, join, leave, terminate };
 }

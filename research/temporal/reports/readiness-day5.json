@@ -1,0 +1,151 @@
+{
+  "status": "blocked",
+  "timestamp": "2026-09-28T17:22:48.294Z",
+  "kind": "real-data-readiness",
+  "reasons": [
+    "At least two active, human-reviewed labels are required; do not activate provisional labels automatically.",
+    "No real temporal samples are available.",
+    "At least three participants are required for a nonempty signer-independent three-way split. Collect more signers; consider leave-one-signer-out later."
+  ],
+  "statistics": {
+    "totalSamples": 0,
+    "usableSamples": 0,
+    "participants": 0,
+    "sessions": 0,
+    "perLabel": {},
+    "perParticipant": {},
+    "perSession": {},
+    "durationMs": {
+      "count": 0,
+      "min": null,
+      "max": null,
+      "mean": null,
+      "median": null
+    },
+    "frameCount": {
+      "count": 0,
+      "min": null,
+      "max": null,
+      "mean": null,
+      "median": null
+    },
+    "effectiveFps": {
+      "count": 0,
+      "min": null,
+      "max": null,
+      "mean": null,
+      "median": null
+    },
+    "missingHandPercentage": null,
+    "accepted": 0,
+    "warning": 0,
+    "rejected": 0,
+    "rejectionReasons": {},
+    "warningReasons": {},
+    "metricScope": "Structurally valid, non-rejected, unique samples only; total/rejected include all inputs."
+  },
+  "vocabulary": {
+    "version": "bdsl-provisional-1",
+    "candidates": 12,
+    "reviewed": 0,
+    "active": 0
+  },
+  "files": [],
+  "split": null,
+  "realTrainingExecuted": false,
+  "realMetrics": null,
+  "export": "blocked until real selection and evaluation",
+  "inferenceContract": {
+    "contractVersion": 1,
+    "status": "blocked",
+    "deployable": false,
+    "modelVersion": "temporal-baseline-v1",
+    "vocabularyVersion": "bdsl-provisional-1",
+    "checksums": {
+      "vocabulary": "5660887f8691def59c6dce06f4e0b60332618cc4141c130c8f246fc45a5a6080",
+      "split": null
+    },
+    "labels": [],
+    "input": {
+      "dtype": "float32",
+      "shape": [
+        null,
+        32,
+        128
+      ],
+      "sequenceLength": 32,
+      "featuresPerFrame": 128,
+      "layout": {
+        "left": "0..62: x0,y0,z0,...,x20,y20,z20",
+        "right": "63..125: x0,y0,z0,...,x20,y20,z20",
+        "leftPresent": 126,
+        "rightPresent": 127
+      }
+    },
+    "preprocessing": {
+      "schemaVersion": 1,
+      "preprocessingVersion": "bdsl-temporal-v1",
+      "modelVersion": "temporal-baseline-v1",
+      "seed": 4105,
+      "splitSeed": "day5-v1",
+      "splitRatios": [
+        0.7,
+        0.15,
+        0.15
+      ],
+      "sequenceLength": 32,
+      "maxInterpolationGapMs": 250,
+      "minimumScale": 1e-8,
+      "minimumResampledValidFrames": 8,
+      "qualityPolicy": "accepted-only",
+      "normalization": "shared-sample-geometric",
+      "datasetNormalization": "none",
+      "augmentation": {
+        "enabled": false,
+        "coordinateJitter": 0.005
+      },
+      "units": 32,
+      "denseUnits": 16,
+      "dropout": 0.2,
+      "learningRate": 0.001,
+      "batchSize": 8,
+      "epochs": 40,
+      "patience": 6,
+      "minDelta": 0.0001,
+      "selection": "validation-loss",
+      "classWeights": false,
+      "exportTolerance": 0.0001
+    },
+    "normalizationState": {
+      "method": "none",
+      "fittedSampleIds": [],
+      "note": "No dataset means/std are fitted; each clip uses its own shared geometric origin/scale."
+    },
+    "geometric": {
+      "origin": "mean wrist xyz of reliably assigned hands in first valid frame",
+      "scale": "maximum absolute coordinate relative to this shared origin across every assigned point in the complete clip",
+      "depthLimit": "MediaPipe z is wrist-relative per hand, not calibrated inter-hand depth"
+    },
+    "missing": "zero coordinates plus per-hand 0 mask; all-zero rows are masked by the RNN",
+    "resampling": "inclusive linspace(0,durationMs,T), linear between adjacent valid observations only; gaps beyond configured limit and outside observed range are zero/masked; duplicate or unordered timestamps rejected",
+    "handedness": "Day-4 fixed physical slots: raw Right -> left, raw Left -> right for unmirrored pixels; confidence >=0.8; unassigned observations are not imputed",
+    "mirroring": "no coordinate flips; CSS preview only",
+    "output": {
+      "shape": [
+        null,
+        0
+      ],
+      "activation": "softmax",
+      "interpretation": "uncalibrated relative class probabilities, not proof of correctness; no meeting acceptance threshold selected"
+    },
+    "unsupported": [
+      "unreviewed labels",
+      "continuous sentences",
+      "automatic sign boundaries",
+      "live meeting temporal inference",
+      "unseen vocabulary",
+      "mirrored input pixels",
+      "uncertain handedness imputation"
+    ]
+  }
+}
