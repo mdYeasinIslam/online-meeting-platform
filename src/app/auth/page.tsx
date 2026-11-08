@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/src/@libs/api/client";
 import EmailPasswordPage from "@/src/@modules/auth/components/EmailPasswordPage";
 import { safeReturnPath } from "@/src/@modules/auth/libs/return-path";
 export default async function Page({
