@@ -1,7 +1,10 @@
 import Link from "next/link";
+import HeroSection from "../@modules/home/components/HeroSection";
 export default function Home() {
   return (
-    <section className="mx-auto max-w-4xl px-6 py-16">
+    <>
+      <HeroSection />
+      {/* <section className="mx-auto max-w-4xl px-6 py-16">
       <h1 className="text-4xl font-bold">Bangla accessible meetings</h1>
       <p className="my-6 text-xl">
         A thesis platform for in-browser Bangla sign-to-text research.
@@ -18,6 +21,7 @@ export default function Home() {
         Day-1 foundation. Live meeting media and continuous sign recognition are
         upcoming milestones.
       </p>
-    </section>
+    </section> */}
+    </>
   );
 }

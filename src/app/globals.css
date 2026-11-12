@@ -7,8 +7,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --color-primary-500: #15573c;
-  --color-primary-400: #007a55;
+  --color-primary-400: #129c72;
+  --color-primary-500: #007a55;
+  --color-primary-800: #15573c;
+  --color-primary-900: #1B2431;
 }
 
 @theme inline {
