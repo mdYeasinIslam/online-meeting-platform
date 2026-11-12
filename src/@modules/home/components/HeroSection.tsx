@@ -1,11 +1,14 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
-    FaArrowRight as ArrowRight,
-    FaHeart as Heart,
-    FaUsers as Users,
-    FaVideo as Video
+  FaArrowRight as ArrowRight,
+  FaHeart as Heart,
+  FaUsers as Users,
+  FaVideo as Video,
 } from "react-icons/fa6";
+import CreateMeetingFormCopy from "../../meeting/components/updated/CreateMeetingFormCopy";
 
 const participants = [
   {
@@ -23,6 +26,8 @@ const participants = [
 ];
 
 const HeroSection = () => {
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+
   return (
     <section
       id="home"
@@ -55,18 +60,48 @@ const HeroSection = () => {
 
           {/* CTA buttons */}
           <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-            <Link
-              href="/meeting/create"
-              className="inline-flex items-center justify-center gap-3 rounded-2xl bg-(--color-primary-800) px-7 py-4 font-bold text-white shadow-lg shadow-green-800 transition hover:-translate-y-1 hover:bg-(--color-primary-500)"
-            >
-              <Video size={21} />
-              Start a Meeting
-              <ArrowRight size={19} />
-            </Link>
+            <div className="relative">
+              <button
+                type="button"
+                aria-expanded={isCreateMenuOpen}
+                aria-haspopup="menu"
+                onClick={() => setIsCreateMenuOpen((isOpen) => !isOpen)}
+                className="max-md:w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-(--color-primary-800) px-7 py-4 font-bold text-white shadow-lg shadow-green-800 transition hover:-translate-y-1 hover:bg-(--color-primary-500) cursor-pointer!"
+              >
+                <Video size={21} />
+                Start a Meeting
+                <ArrowRight size={19} />
+              </button>
+
+              {isCreateMenuOpen && (
+                <CreateMeetingFormCopy />
+                // <div
+                //   role="menu"
+                //   className="absolute left-0 top-full z-30 mt-2 min-w-full overflow-hidden rounded-xl bg-white p-2 text-sm shadow-xl"
+                // >
+                //   <Link
+                //     href="/meeting/create"
+                //     role="menuitem"
+                //     onClick={() => setIsCreateMenuOpen(false)}
+                //     className="block whitespace-nowrap rounded-lg px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-(--color-primary-500)"
+                //   >
+                //     Create Instant Meeting
+                //   </Link>
+                //   <Link
+                //     href="/meeting/create?later=true"
+                //     role="menuitem"
+                //     onClick={() => setIsCreateMenuOpen(false)}
+                //     className="block whitespace-nowrap rounded-lg px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-(--color-primary-500)"
+                //   >
+                //     Create Meeting for later
+                //   </Link>
+                // </div>
+              )}
+            </div>
 
             <Link
               href="/meeting/join"
-              className="inline-flex items-center justify-center gap-3 rounded-2xl border border-blue-400 bg-white px-7 py-4 font-bold text-slate-800 transition hover:-translate-y-1 hover:bg-blue-50"
+              className="inline-flex items-center justify-center gap-3 rounded-2xl border border-blue-400 bg-white px-7 py-4 font-bold text-slate-800 transition hover:-translate-y-1 hover:bg-blue-50 cursor-pointer"
             >
               <Users size={21} />
               Join a Meeting

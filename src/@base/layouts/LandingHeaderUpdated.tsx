@@ -57,7 +57,7 @@ export default function LandingHeaderUpdated() {
             <button
               disabled={busy}
               onClick={signOut}
-              className="rounded-xl border border-(--color-primary-800) px-6 py-3 text-sm font-bold  transition hover:bg-(--color-primary-800)"
+              className="rounded-xl border border-(--color-primary-800) px-6 py-3 text-sm font-bold  transition hover:bg-(--color-primary-800) cursor-pointer"
             >
               {busy ? "Signing out…" : "Sign Out"}
             </button>

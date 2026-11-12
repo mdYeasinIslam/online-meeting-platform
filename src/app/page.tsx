@@ -1,9 +1,11 @@
-import Link from "next/link";
+import { Footer } from "antd/es/layout/layout";
 import HeroSection from "../@modules/home/components/HeroSection";
 export default function Home() {
   return (
     <>
       <HeroSection />
+      <Footer />
+
       {/* <section className="mx-auto max-w-4xl px-6 py-16">
       <h1 className="text-4xl font-bold">Bangla accessible meetings</h1>
       <p className="my-6 text-xl">
