@@ -2,12 +2,13 @@
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 
-@import "tailwindcss"; 
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --color-primary-500:#15573C;
+  --color-primary-500: #15573c;
+  --color-primary-400: #007a55;
 }
 
 @theme inline {
@@ -35,4 +36,3 @@
   margin: 0 auto;
   padding: 0 16px;
 }
-
