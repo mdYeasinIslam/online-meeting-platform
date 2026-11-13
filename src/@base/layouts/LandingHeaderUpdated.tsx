@@ -1,11 +1,19 @@
 "use client";
+import AuthGuard from "@/src/@modules/auth/components/AuthGuard";
+import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
+import CreateMeetingFormCopy from "@/src/@modules/meeting/components/updated/CreateMeetingFormCopy";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
-import Image from "next/image";
-
+import {
+  FaArrowRight as ArrowRight,
+  FaUsers as Users,
+  FaVideo as Video,
+} from "react-icons/fa6";
 export default function LandingHeaderUpdated() {
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+
   const { user, logout } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
@@ -40,6 +48,33 @@ export default function LandingHeaderUpdated() {
         </div>
       </div>
       <nav className="flex flex-wrap items-center gap-4">
+        <div className=" flex flex-col gap-4 sm:flex-row">
+          <div>
+            <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-blue-400 bg-white px-4 py-2 font-bold text-slate-800 transition hover:-translate-y-0.5 hover:bg-blue-50 cursor-pointer">
+              <Users size={21} />
+              Join a Meeting
+            </div>
+          </div>
+          <div className="relative">
+            <button
+              type="button"
+              aria-expanded={isCreateMenuOpen}
+              aria-haspopup="menu"
+              onClick={() => setIsCreateMenuOpen((isOpen) => !isOpen)}
+              className="max-md:w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-(--color-primary-800) px-4 py-2 font-bold text-white transition hover:-translate-y-0.5 hover:bg-(--color-primary-500) cursor-pointer!"
+            >
+              <Video size={21} />
+              New Meeting
+              {/* <ArrowRight size={19} /> */}
+            </button>
+
+            {isCreateMenuOpen && (
+              <AuthGuard>
+                <CreateMeetingFormCopy />
+              </AuthGuard>
+            )}
+          </div>
+        </div>
         <Link href="/dashboard" className="hover:underline">
           Dashboard
         </Link>

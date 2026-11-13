@@ -47,8 +47,10 @@ export default function CreateMeetingFormCopy() {
     <div className="relative w-fit">
       <div
         role="menu"
-        className="absolute left-0 top-full z-30 mt-2 min-w-full overflow-hidden rounded-xl bg-white text-sm shadow-xl"
+        className="absolute left-0 top-full z-30 mt- min-w-full overflow-hidden rounded-xl bg-white text-sm shadow-xl"
       >
+
+        
         <button
           //   href="/meeting/create"
           role="menuitem"

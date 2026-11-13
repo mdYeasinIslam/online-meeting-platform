@@ -9,6 +9,7 @@ import {
   FaVideo as Video,
 } from "react-icons/fa6";
 import CreateMeetingFormCopy from "../../meeting/components/updated/CreateMeetingFormCopy";
+import AuthGuard from "../../auth/components/AuthGuard";
 
 const participants = [
   {
@@ -74,7 +75,9 @@ const HeroSection = () => {
               </button>
 
               {isCreateMenuOpen && (
-                <CreateMeetingFormCopy />
+                <AuthGuard>
+                  <CreateMeetingFormCopy />
+                </AuthGuard>
                 // <div
                 //   role="menu"
                 //   className="absolute left-0 top-full z-30 mt-2 min-w-full overflow-hidden rounded-xl bg-white p-2 text-sm shadow-xl"

@@ -1,4 +1,4 @@
-import { Footer } from "antd/es/layout/layout";
+import Footer from "../@base/layouts/Footer";
 import HeroSection from "../@modules/home/components/HeroSection";
 export default function Home() {
   return (
