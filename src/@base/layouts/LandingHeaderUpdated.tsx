@@ -3,6 +3,7 @@ import { cn } from "@/src/@libs/utils/cn";
 import AuthGuard from "@/src/@modules/auth/components/AuthGuard";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
 import CreateMeetingFormCopy from "@/src/@modules/meeting/components/updated/CreateMeetingFormCopy";
+import JoinMeetingFormCopy from "@/src/@modules/meeting/components/updated/JoinMeetingFormCopy";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -14,11 +15,14 @@ import {
 } from "react-icons/fa6";
 export default function LandingHeaderUpdated() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const pathname = usePathname()
+  const [joinMeeting, setJoinMeeting] = useState("");
+
+  const pathname = usePathname();
   async function signOut() {
     setBusy(true);
     setError("");
@@ -35,7 +39,7 @@ export default function LandingHeaderUpdated() {
     <header
       className={cn(
         "flex flex-wrap items-center justify-between gap-4 border-b border-slate-700 px-6 py-4",
-        pathname === "/auth" ? "hidden" : ""
+        pathname === "/auth" || pathname.includes("/meeting") ? "hidden" : "",
       )}
     >
       <div className="flex items-center">
@@ -56,12 +60,18 @@ export default function LandingHeaderUpdated() {
       <nav className="flex flex-wrap items-center gap-4">
         <div className=" flex flex-col gap-4 sm:flex-row">
           <div>
-            <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-blue-400 bg-white px-4 py-2 font-bold text-slate-800 transition hover:-translate-y-0.5 hover:bg-blue-50 cursor-pointer">
+            {/* <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-blue-400 bg-white px-4 py-2 font-bold text-slate-800 transition hover:-translate-y-0.5 hover:bg-blue-50 cursor-pointer">
               <Users size={21} />
               Join a Meeting
-            </div>
+            </div> */}
+            <JoinMeetingFormCopy name="email" onJoinMeeting={setJoinMeeting} />
           </div>
-          <div className="relative">
+
+          <div
+            className="relative"
+            onMouseEnter={() => setIsCreateMenuOpen(true)}
+            onMouseLeave={() => setIsCreateMenuOpen(false)}
+          >
             <button
               type="button"
               aria-expanded={isCreateMenuOpen}
@@ -70,7 +80,7 @@ export default function LandingHeaderUpdated() {
               className="max-md:w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-(--color-primary-800) px-4 py-2 font-bold text-white transition hover:-translate-y-0.5 hover:bg-(--color-primary-500) cursor-pointer!"
             >
               <Video size={21} />
-              New Meeting
+              New
               {/* <ArrowRight size={19} /> */}
             </button>
 
@@ -81,20 +91,55 @@ export default function LandingHeaderUpdated() {
             )}
           </div>
         </div>
-        <Link href="/dashboard" className="hover:underline">
+        {/* <Link href="/dashboard" className="hover:underline">
           Dashboard
         </Link>
         <Link href="/sign-demo" className="hover:underline">
           Alphabet demo
-        </Link>
+        </Link> */}
         {user ? (
           <>
-            <Link href="/research/data-collection" className="hover:underline">
+            {/* <Link href="/research/data-collection" className="hover:underline">
               Data collection
-            </Link>
-            <button className="flex items-center justify-center gap-2 rounded-full border w-8 h-8 bg-gray-700">
-              <span className=" ">{user.displayName.slice(0, 1)}</span>
-            </button>
+            </Link> */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsProfileMenuOpen(true)}
+              onMouseLeave={() => setIsProfileMenuOpen(false)}
+            >
+              <button
+                type="button"
+                aria-expanded={isProfileMenuOpen}
+                aria-haspopup="menu"
+                onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
+                className="flex h-8 w-8 items-center justify-center gap-2 rounded-full border bg-gray-700 cursor-pointer hover:bg-gray-600"
+              >
+                <span className=" ">{user.displayName.slice(0, 1)}</span>
+              </button>
+              {isProfileMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute left-0 z-10 pt-2  min-w-32 rounded-xl border border-slate-700 bg-slate-900 p-2 shadow-lg"
+                >
+                  <Link
+                    href="/profile"
+                    role="menuitem"
+                    onClick={() => setIsProfileMenuOpen(false)}
+                    className="block rounded-lg px-3 py-2 hover:bg-slate-800"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    role="menuitem"
+                    onClick={() => setIsProfileMenuOpen(false)}
+                    className="block rounded-lg px-3 py-2 hover:bg-slate-800"
+                  >
+                    Dashboard
+                  </Link>
+                </div>
+              )}
+            </div>
             <button
               disabled={busy}
               onClick={signOut}
