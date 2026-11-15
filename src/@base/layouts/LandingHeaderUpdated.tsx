@@ -1,10 +1,11 @@
 "use client";
+import { cn } from "@/src/@libs/utils/cn";
 import AuthGuard from "@/src/@modules/auth/components/AuthGuard";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
 import CreateMeetingFormCopy from "@/src/@modules/meeting/components/updated/CreateMeetingFormCopy";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   FaArrowRight as ArrowRight,
@@ -13,11 +14,11 @@ import {
 } from "react-icons/fa6";
 export default function LandingHeaderUpdated() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
-
   const { user, logout } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const pathname = usePathname()
   async function signOut() {
     setBusy(true);
     setError("");
@@ -31,7 +32,12 @@ export default function LandingHeaderUpdated() {
     }
   }
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700 px-6 py-4">
+    <header
+      className={cn(
+        "flex flex-wrap items-center justify-between gap-4 border-b border-slate-700 px-6 py-4",
+        pathname === "/auth" ? "hidden" : ""
+      )}
+    >
       <div className="flex items-center">
         <Image
           src="/logo.webp"

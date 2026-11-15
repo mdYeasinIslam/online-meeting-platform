@@ -136,7 +136,7 @@ const HeroSection = () => {
         <div className="relative z-10 ">
           {/* <VideoMeetingPreview /> */}
           <Image
-            src="/images/banner/hero.jpeg"
+            src="/images/banner/hero1.jpeg"
             alt="Meeting preview"
             width={600}
             height={600}
