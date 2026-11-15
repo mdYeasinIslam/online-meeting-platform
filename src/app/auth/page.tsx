@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "@/src/@libs/api/client";
 import EmailPasswordPage from "@/src/@modules/auth/components/EmailPasswordPage";
+import EmailPasswordPageCopy from "@/src/@modules/auth/components/EmailPasswordPageCopy";
 import { safeReturnPath } from "@/src/@modules/auth/libs/return-path";
 export default async function Page({
   searchParams,
@@ -14,9 +15,9 @@ export default async function Page({
         ? "Google authentication failed. Please try again."
         : "";
   return (
-    <EmailPasswordPage
-      next={safeReturnPath(params.next)}
-      initialError={error}
-    />
+      <EmailPasswordPageCopy
+        next={safeReturnPath(params.next)}
+        initialError={error}
+      />
   );
 }
