@@ -38,7 +38,7 @@ export default function LandingHeaderUpdated() {
   return (
     <header
       className={cn(
-        "flex flex-wrap items-center justify-between gap-4 border-b border-slate-700 px-6 py-4",
+        "flex lg:flex-wrap items-center justify-between gap-2 md:gap-4 border-b border-slate-700 px-1 py-2 lg:px-6 lg:py-4",
         pathname === "/auth" || pathname.includes("/meeting") ? "hidden" : "",
       )}
     >
@@ -48,17 +48,20 @@ export default function LandingHeaderUpdated() {
           alt="Let's Talk Logo"
           width={60}
           height={60}
-          className="rounded-full"
+          className="max-sm:w-10 max-sm:h-10 rounded-full"
         />
         <div>
-          <Link href="/" className="text-lg font-bold">
+          <Link href="/" className="text-sm md:text-lg font-bold">
             Let's Talk
           </Link>
-          <p className="text-sm text-slate-400">Meet - Communicate - Include</p>
+          <p className="text-xs md:text-sm text-slate-400">
+            Meet - Communicate - Include
+          </p>
         </div>
       </div>
       <nav className="flex flex-wrap items-center gap-4">
-        <div className=" flex flex-col gap-4 sm:flex-row">
+        <div className="hidden lg:flex flex-col gap-4 sm:flex-row ">
+          {/* Join meeting */}
           <div>
             {/* <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-blue-400 bg-white px-4 py-2 font-bold text-slate-800 transition hover:-translate-y-0.5 hover:bg-blue-50 cursor-pointer">
               <Users size={21} />
@@ -67,6 +70,7 @@ export default function LandingHeaderUpdated() {
             <JoinMeetingFormCopy name="email" onJoinMeeting={setJoinMeeting} />
           </div>
 
+          {/* New meeting */}
           <div
             className="relative"
             onMouseEnter={() => setIsCreateMenuOpen(true)}
@@ -97,8 +101,10 @@ export default function LandingHeaderUpdated() {
         <Link href="/sign-demo" className="hover:underline">
           Alphabet demo
         </Link> */}
+
+        {/* profile and authentication route */}
         {user ? (
-          <>
+          <div className="flex items-center gap-2 md:gap-4">
             {/* <Link href="/research/data-collection" className="hover:underline">
               Data collection
             </Link> */}
@@ -112,9 +118,9 @@ export default function LandingHeaderUpdated() {
                 aria-expanded={isProfileMenuOpen}
                 aria-haspopup="menu"
                 onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
-                className="flex h-8 w-8 items-center justify-center gap-2 rounded-full border bg-gray-700 cursor-pointer hover:bg-gray-600"
+                className="flex w-6 h-6 md:h-8 md:w-8 items-center justify-center gap-2 rounded-full border bg-(--color-primary-500) cursor-pointer hover:bg-gray-600"
               >
-                <span className=" ">{user.displayName.slice(0, 1)}</span>
+                <span className="font-bold">{user.displayName.slice(0, 1)}</span>
               </button>
               {isProfileMenuOpen && (
                 <div
@@ -143,11 +149,11 @@ export default function LandingHeaderUpdated() {
             <button
               disabled={busy}
               onClick={signOut}
-              className="rounded-xl border border-(--color-primary-800) px-6 py-3 text-sm font-bold  transition hover:bg-(--color-primary-800) cursor-pointer"
+              className="rounded-md md:rounded-xl border border-(--color-primary-800) px-2 py-1.5 md:px-4 md:py-2 lg:px-6 lg:py-3 text-sm font-bold  transition hover:bg-(--color-primary-800) cursor-pointer"
             >
               {busy ? "Signing out…" : "Sign Out"}
             </button>
-          </>
+          </div>
         ) : (
           <>
             <Link

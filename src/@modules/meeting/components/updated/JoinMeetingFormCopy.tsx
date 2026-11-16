@@ -45,7 +45,8 @@ const JoinMeetingFormCopy = ({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // onJoinMeeting?.(email.trim());
+      // onJoinMeeting?.(email.trim());
+      console.log(request.current)
     if (request.current) return;
     setError("");
     setSignIn("");
@@ -112,7 +113,7 @@ const JoinMeetingFormCopy = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={`w-full relative ${className}`}>
+    <form onSubmit={handleSubmit} className={`w-full relative`}>
       <input
         // type="text"
         // required
@@ -135,20 +136,20 @@ const JoinMeetingFormCopy = ({
         autoComplete="off"
         autoCapitalize="none"
         spellCheck={false}
-        placeholder="Paste a meeting link or enter a meeting ID"
+        placeholder="Paste a meeting link or ID"
         aria-invalid={Boolean(error)}
         aria-describedby={`${id}-help${error ? ` ${id}-error` : ""}`}
-        className="border bg-transparent dark:border-slate-500 dark:placeholder:text-slate-500 dark:text-[#abc2d3] border-[#e5eaf2] py-2 pl-4 pr-[115px] outline-none w-full rounded-md"
+        className="border bg-transparent dark:border-slate-500 dark:placeholder:text-slate-500 dark:text-[#abc2d3] border-[#e5eaf2] py-2 pl-4 pr-[115px] outline-none w-full rounded-md "
         // {...props}
       />
       <button
         type="submit"
         //   onClick={()=>setValue('')}
         disabled={busy || Boolean(signIn)}
-        className=" absolute top-0 right-0 h-full bg-(--color-primary-400) text-white font-semibold px-5 flex items-center justify-center rounded-r-md cursor-pointer hover:bg-white hover:text-black transition-all duration-100 ease-in"
+        className="absolute top-0 right-0 h-full bg-(--color-primary-400) text-white font-semibold px-3   rounded-md cursor-pointer hover:bg-white hover:text-black transition-all duration-100 ease-in"
       >
         {/* {buttonLabel} */}
-        {busy ? "Checking meeting…" : "Join meeting"}
+        {busy ? "Checking meeting…" : "Join "}
       </button>
     </form>
   );

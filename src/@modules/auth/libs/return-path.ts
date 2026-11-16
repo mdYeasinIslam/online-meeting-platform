@@ -5,5 +5,5 @@ export function safeReturnPath(value: unknown): string {
     value.startsWith("/meeting/") &&
     ROOM_ID_PATTERN.test(value.slice(9))
     ? value
-    : "/dashboard";
+    : "/";
 }

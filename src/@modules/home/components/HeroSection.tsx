@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa6";
 import CreateMeetingFormCopy from "../../meeting/components/updated/CreateMeetingFormCopy";
 import AuthGuard from "../../auth/components/AuthGuard";
+import JoinMeetingFormCopy from "../../meeting/components/updated/JoinMeetingFormCopy";
 
 const participants = [
   {
@@ -27,26 +28,33 @@ const participants = [
 ];
 
 const HeroSection = () => {
+  const [joinMeeting, setJoinMeeting] = useState("");
+
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
 
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-(--color-primary-900) px-5 pb-20 pt-16 sm:px-8 lg:px-12 lg:pb-28 lg:pt-20"
+      className="relative overflow-hidden bg-(--color-primary-900) px-5 pb-20 pt-4 md:pt-10 sm:px-8 lg:px-12 lg:pb-28 lg:pt-20"
     >
       {/* Decorative shapes */}
-      <div className="absolute -right-32 top-10 h-[500px] w-[650px] rounded-full bg-blue-100/60 blur-3xl" />
+      <div className="hidden lg:block absolute -right-32 top-10 h-[500px] w-[650px] rounded-full bg-blue-100/60 blur-3xl" />
       {/* <div className="absolute -bottom-32 left-1/3 h-64 w-64 rounded-full bg-indigo-100/50 blur-3xl" /> */}
 
-      <div className="relative mx-auto grid max-w-[1440px] items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="relative mx-auto grid max-w-[1440px] items-center gap-8 md:gap-16 lg:grid-cols-[1.05fr_0.95fr]">
         {/* Left content */}
         <div className="relative z-20">
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-xs font-bold text-(--color-primary-500) sm:text-sm">
+          <div className="mb-7 hidden md:inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-xs font-bold text-(--color-primary-500) sm:text-sm">
             <Heart size={17} fill="currentColor" />
             Accessible Meeting for a More Inclusive Bangladesh
           </div>
 
-          <h2 className="max-w-2xl text-4xl font-extrabold leading-[1.16] tracking-tight text-(--color-primary-400) sm:text-5xl lg:text-[58px]">
+          {/* Join meeting */}
+          <div className="block lg:hidden mb-6">
+            <JoinMeetingFormCopy name="email" onJoinMeeting={setJoinMeeting} />
+          </div>
+
+          <h2 className="max-w-2xl text-4xl sm:text-5xl lg:text-[58px] font-extrabold md:leading-[1.16] tracking-tight text-(--color-primary-400)">
             Break the Communication Barrier{" "}
             <span className="relative inline-block">
               Together
@@ -54,20 +62,20 @@ const HeroSection = () => {
             </span>
           </h2>
 
-          <p className="mt-8 max-w-xl text-lg leading-8 text-gray-400 sm:text-md">
+          <p className="mt-4 md:mt-8 max-w-xl text-md md:leading-8 text-gray-400 sm:text-md">
             Join secure online meetings with real-time Bangla Sign Language to
             Text and captions. Communication should be accessible to everyone.
           </p>
 
           {/* CTA buttons */}
-          <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-4 md:mt-9 flex flex-col gap-2 md:gap-4 sm:flex-row">
             <div className="relative">
               <button
                 type="button"
                 aria-expanded={isCreateMenuOpen}
                 aria-haspopup="menu"
                 onClick={() => setIsCreateMenuOpen((isOpen) => !isOpen)}
-                className="max-md:w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-(--color-primary-800) px-7 py-4 font-bold text-white shadow-lg shadow-green-800 transition hover:-translate-y-1 hover:bg-(--color-primary-500) cursor-pointer!"
+                className="max-md:w-full inline-flex items-center justify-center gap-3 rounded-md md:rounded-2xl bg-(--color-primary-800) lg:px-7 py-2 lg:py-4 font-bold text-white md:shadow-lg shadow-green-800 transition hover:-translate-y-1 hover:bg-(--color-primary-500) cursor-pointer!"
               >
                 <Video size={21} />
                 Start a Meeting
@@ -104,7 +112,7 @@ const HeroSection = () => {
 
             <Link
               href="/meeting/join"
-              className="inline-flex items-center justify-center gap-3 rounded-2xl border border-blue-400 bg-white px-7 py-4 font-bold text-slate-800 transition hover:-translate-y-1 hover:bg-blue-50 cursor-pointer"
+              className="inline-flex items-center justify-center gap-3 rounded-md md:rounded-2xl border border-blue-400 bg-white px-7  py-2 lg:py-4 font-bold text-slate-800 transition hover:-translate-y-1 hover:bg-blue-50 cursor-pointer"
             >
               <Users size={21} />
               Join a Meeting
@@ -112,7 +120,7 @@ const HeroSection = () => {
           </div>
 
           {/* Community */}
-          <div className="mt-9 flex items-center gap-4">
+          <div className="mt-9 hidden md:flex items-center gap-4">
             <div className="flex -space-x-3">
               {participants.map((person) => (
                 <img
