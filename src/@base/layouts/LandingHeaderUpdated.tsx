@@ -38,7 +38,7 @@ export default function LandingHeaderUpdated() {
   return (
     <header
       className={cn(
-        "flex lg:flex-wrap items-center justify-between gap-2 md:gap-4 border-b border-slate-700 px-1 py-2 lg:px-6 lg:py-4",
+        "flex lg:flex-wrap items-center justify-between gap-2 md:gap-4 border-b border-slate-700 px-2 py-2 lg:px-6 lg:py-4",
         pathname === "/auth" || pathname.includes("/meeting") ? "hidden" : "",
       )}
     >
@@ -59,8 +59,8 @@ export default function LandingHeaderUpdated() {
           </p>
         </div>
       </div>
-      <nav className="flex flex-wrap items-center gap-4">
-        <div className="hidden lg:flex flex-col gap-4 sm:flex-row ">
+      <nav className="flex lg:flex-wrap items-center gap-2 lg:gap-4">
+        <div className="hidden md:flex flex-col gap-4 sm:flex-row ">
           {/* Join meeting */}
           <div>
             {/* <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-blue-400 bg-white px-4 py-2 font-bold text-slate-800 transition hover:-translate-y-0.5 hover:bg-blue-50 cursor-pointer">

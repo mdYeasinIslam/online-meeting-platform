@@ -139,7 +139,7 @@ const JoinMeetingFormCopy = ({
         placeholder="Paste a meeting link or ID"
         aria-invalid={Boolean(error)}
         aria-describedby={`${id}-help${error ? ` ${id}-error` : ""}`}
-        className="border bg-transparent dark:border-slate-500 dark:placeholder:text-slate-500 dark:text-[#abc2d3] border-[#e5eaf2] py-2 pl-4 pr-[115px] outline-none w-full rounded-md "
+        className="border bg-transparent dark:border-slate-500 dark:placeholder:text-slate-500 dark:text-[#abc2d3] border-[#e5eaf2] py-2 pl-4 pr-14 lg:pr-[115px] outline-none w-full rounded-md "
         // {...props}
       />
       <button

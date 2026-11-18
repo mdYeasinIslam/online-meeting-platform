@@ -50,7 +50,7 @@ const HeroSection = () => {
           </div>
 
           {/* Join meeting */}
-          <div className="block lg:hidden mb-6">
+          <div className="block md:hidden mb-6">
             <JoinMeetingFormCopy name="email" onJoinMeeting={setJoinMeeting} />
           </div>
 
@@ -69,16 +69,20 @@ const HeroSection = () => {
 
           {/* CTA buttons */}
           <div className="mt-4 md:mt-9 flex flex-col gap-2 md:gap-4 sm:flex-row">
-            <div className="relative">
+            <div
+              onMouseEnter={() => setIsCreateMenuOpen(true)}
+              onMouseLeave={() => setIsCreateMenuOpen(false)}
+              className="relative"
+            >
               <button
                 type="button"
                 aria-expanded={isCreateMenuOpen}
                 aria-haspopup="menu"
                 onClick={() => setIsCreateMenuOpen((isOpen) => !isOpen)}
-                className="max-md:w-full inline-flex items-center justify-center gap-3 rounded-md md:rounded-2xl bg-(--color-primary-800) lg:px-7 py-2 lg:py-4 font-bold text-white md:shadow-lg shadow-green-800 transition hover:-translate-y-1 hover:bg-(--color-primary-500) cursor-pointer!"
+                className="max-md:w-full inline-flex items-center justify-center gap-3 rounded-md md:rounded-2xl bg-(--color-primary-800) md:px-7 py-2 lg:py-4 font-bold text-white md:shadow-lg shadow-green-800 transition hover:-translate-y-1 hover:bg-(--color-primary-500) cursor-pointer!"
               >
                 <Video size={21} />
-                Start a Meeting
+                Start a New Meeting
                 <ArrowRight size={19} />
               </button>
 
@@ -110,13 +114,13 @@ const HeroSection = () => {
               )}
             </div>
 
-            <Link
+            {/* <Link
               href="/meeting/join"
               className="inline-flex items-center justify-center gap-3 rounded-md md:rounded-2xl border border-blue-400 bg-white px-7  py-2 lg:py-4 font-bold text-slate-800 transition hover:-translate-y-1 hover:bg-blue-50 cursor-pointer"
             >
               <Users size={21} />
               Join a Meeting
-            </Link>
+            </Link> */}
           </div>
 
           {/* Community */}
