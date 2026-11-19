@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 export const API_BASE_URL = (
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://online-meeting-platform-server.onrender.com/api"
@@ -146,7 +148,16 @@ export async function api<T>(
       options.notifyExpired ?? (path !== "/auth/me" && path !== "/auth/login"),
     );
   } catch (error) {
-    if (error instanceof ApiError || options.signal?.aborted) throw error;
+    if (error instanceof ApiError) {
+      toast.error(error.message);
+      throw error;
+    }
+
+    if (options.signal?.aborted) throw error;
+
+    toast.error(
+      "Cannot reach the server. Check your connection and that the Express server is running.",
+    );
     throw new ApiError(
       0,
       "Cannot reach the server. Check your connection and that the Express server is running.",
