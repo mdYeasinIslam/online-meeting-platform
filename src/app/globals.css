@@ -13,6 +13,13 @@
   --color-primary-900: #1B2431;
 }
 
+.hidden_scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 @theme inline {
   /* --color-background: var(--background);
   --color-foreground: var(--foreground); */
