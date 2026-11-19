@@ -38,6 +38,7 @@ export default function CreateMeetingFormCopy() {
   //   }
   async function submit() {
     if(!user) {
+      router.push("/auth");
       toast.error("User not authenticated. Please log in.");
       return;
     }
