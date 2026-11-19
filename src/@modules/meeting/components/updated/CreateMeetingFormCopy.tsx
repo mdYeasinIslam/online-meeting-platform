@@ -1,19 +1,17 @@
 "use client";
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { api } from "@/src/@libs/api/client";
-import { Meeting } from "../../types";
 import { Divider } from "antd";
-import useGlobalState from "@/src/@libs/hooks/useGlobalState";
-import { useMeetingConnection } from "@/src/@modules/livekit/useMeetingConnection";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Meeting } from "../../types";
 export default function CreateMeetingFormCopy() {
   const router = useRouter();
-  const [roomId] = useGlobalState<string | null>({
-    key: "roomId",
-    initialValue: null,
-  });
-  const connection = useMeetingConnection(roomId ?? "");
-  
+  // const [roomId] = useGlobalState<string | null>({
+  //   key: "roomId",
+  //   initialValue: null,
+  // });
+  // const connection = useMeetingConnection(roomId ?? "");
+
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   //   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -51,7 +49,7 @@ export default function CreateMeetingFormCopy() {
       setBusy(false);
     }
   }
-  if (!roomId) return null;
+  // if (!roomId) return null;
   return (
     <div className="relative w-fit">
       <div
