@@ -62,7 +62,7 @@ export default function EndMeetingControl({
   const triggerButton = visible ? (
     <button
       ref={trigger}
-      className="rounded border border-red-500 bg-red-950 p-3 text-red-100 cursor-pointer"
+      className="rounded border border-red-500 bg-red-950 p-2 md:p-3 text-red-100 cursor-pointer"
       onClick={() => {
         setError("");
         dialog.current?.showModal();

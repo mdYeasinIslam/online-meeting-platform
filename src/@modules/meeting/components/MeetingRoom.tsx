@@ -96,28 +96,27 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
       }}
     />
   ) : null;
-  if (terminal)
-    router.push('/')
-    // return (
-    //   <section className="mx-auto max-w-7xl p-4">
-    //     {endControl}
-    //     <h1 className="text-2xl font-bold">
-    //       {terminal === "ended"
-    //         ? "This meeting has ended"
-    //         : "This meeting is ending"}
-    //     </h1>
-    //     <p className="my-4">You can no longer join using this meeting link.</p>
-    //     {terminal === "ending" && (
-    //       <p>
-    //         Shutdown has not yet been confirmed. The host can retry ending the
-    //         meeting.
-    //       </p>
-    //     )}
-    //     <Link href="/dashboard" className="underline">
-    //       Return to dashboard
-    //     </Link>
-    //   </section>
-    // );
+  if (terminal) router.push("/");
+  // return (
+  //   <section className="mx-auto max-w-7xl p-4">
+  //     {endControl}
+  //     <h1 className="text-2xl font-bold">
+  //       {terminal === "ended"
+  //         ? "This meeting has ended"
+  //         : "This meeting is ending"}
+  //     </h1>
+  //     <p className="my-4">You can no longer join using this meeting link.</p>
+  //     {terminal === "ending" && (
+  //       <p>
+  //         Shutdown has not yet been confirmed. The host can retry ending the
+  //         meeting.
+  //       </p>
+  //     )}
+  //     <Link href="/dashboard" className="underline">
+  //       Return to dashboard
+  //     </Link>
+  //   </section>
+  // );
   if (error)
     return (
       <section className="p-6">
@@ -146,7 +145,7 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
       </p>
     );
   return (
-    <section className="mx-auto max-w-7xl p-4">
+    <section className="mx-auto container p-4">
       {endControl}
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -177,10 +176,14 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
       )}
       {connection.room ? (
         <RoomContext.Provider value={connection.room}>
-          <p role="status" className="mb-3">
+          {/* <p role="status" className="mb-3">
             {connection.state === ConnectionState.Connected
               ? "Connected"
               : "Reconnecting… Your media may pause while the connection recovers."}
+          </p> */}
+          <p role="status" className="mb-3">
+            {connection.state !== ConnectionState.Connected &&
+              "Reconnecting… Your media may pause while the connection recovers."}
           </p>
           <RoomAudioRenderer />
           <StartAudio
@@ -209,11 +212,11 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
             joining={connection.joining}
             onJoin={connection.join}
           />
-          <div className="mt-4 flex md:flex-wrap items-center gap-3">
+          <div className="mt-4 flex md:flex-wrap justify-between items-center gap-3">
             <button
               disabled={leaving}
               onClick={() => void leave()}
-              className="rounded border px-1 py-2 md:p-3 cursor-pointer"
+              className="rounded border p-2 md:p-3 cursor-pointer"
             >
               Leave meeting
             </button>

@@ -39,6 +39,7 @@ export default function ConnectedMeeting({
   const composer = useSignComposer(track, connected, publish);
   return (
     <>
+      
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
         <ParticipantGrid hostUserId={hostUserId} />
         <CaptionPanel
