@@ -13,7 +13,7 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
       router.replace(`/auth?next=${encodeURIComponent(safeReturnPath(path))}`);
   }, [status, user, path, router]);
   if (status === "error")
-    toast.error(
+    console.error(
       typeof error === "string" ? error : "An unknown error occurred.",
     );
   
@@ -29,7 +29,7 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
     //   </section>
     // );
   if (status === "loading" || !user)
-    toast.loading("Checking your session…", { duration: 2000 });
+    console.warn("Checking your session…", { duration: 2000 });
     // return (
     //   <p role="status" className="p-6">
     //     Checking your session…
