@@ -11,6 +11,7 @@ import {
 import CreateMeetingFormCopy from "../../meeting/components/updated/CreateMeetingFormCopy";
 import AuthGuard from "../../auth/components/AuthGuard";
 import JoinMeetingFormCopy from "../../meeting/components/updated/JoinMeetingFormCopy";
+import HeroStatusCard from "./HeroStatusCard";
 
 const participants = [
   {
@@ -31,14 +32,13 @@ const HeroSection = () => {
   const [joinMeeting, setJoinMeeting] = useState("");
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
-
   return (
     <section
       id="home"
       className="relative overflow-hidden bg-(--color-primary-900) px-5 pb-20 pt-4 md:pt-10 sm:px-8 lg:px-12 lg:pb-28 lg:pt-20"
     >
       {/* Decorative shapes */}
-      <div className="hidden lg:block absolute -right-32 top-10 h-[500px] w-[650px] rounded-full bg-blue-100/60 blur-3xl" />
+      <div className="hidden lg:block absolute -right-32 top-10 h-[500px] w-[650px] rounded-full bg-emerald-950/50 blur-3xl" />
       {/* <div className="absolute -bottom-32 left-1/3 h-64 w-64 rounded-full bg-indigo-100/50 blur-3xl" /> */}
 
       <div className="relative mx-auto grid max-w-[1440px] items-center gap-8 md:gap-16 lg:grid-cols-[1.05fr_0.95fr]">
@@ -145,15 +145,16 @@ const HeroSection = () => {
         </div>
 
         {/* Right visual */}
-        <div className="relative z-10 ">
+        <div className="relative flex justify-center lg:justify-end z-10 ">
           {/* <VideoMeetingPreview /> */}
-          <Image
+          {/* <Image
             src="/images/banner/hero1.jpeg"
             alt="Meeting preview"
             width={600}
             height={600}
             className="w-full h-full rounded-2xl shadow-lg shadow-blue-800/50"
-          />
+          /> */}
+          <HeroStatusCard />
         </div>
       </div>
     </section>

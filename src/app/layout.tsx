@@ -4,7 +4,7 @@ import LandingHeaderUpdated from "../@base/layouts/LandingHeaderUpdated";
 import Provider from "../@libs/context/Provider";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "MeetHub",
+  title: "Let's Talk",
   description: "Accessible Bangla meeting thesis",
 };
 export default function RootLayout({ children }: { children: ReactNode }) {

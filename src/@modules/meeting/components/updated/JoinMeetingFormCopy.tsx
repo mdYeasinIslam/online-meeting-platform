@@ -45,8 +45,7 @@ const JoinMeetingFormCopy = ({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-      // onJoinMeeting?.(email.trim());
-      console.log(request.current)
+    onJoinMeeting?.(email.trim());
     if (request.current) return;
     setError("");
     setSignIn("");
