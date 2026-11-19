@@ -1,22 +1,22 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { api, ApiError } from "@/src/@libs/api/client";
+import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
+import { ROOM_ID_PATTERN } from "@/src/@modules/auth/libs/return-path";
+import { useMeetingConnection } from "@/src/@modules/livekit/useMeetingConnection";
 import {
   RoomAudioRenderer,
   RoomContext,
   StartAudio,
 } from "@livekit/components-react";
 import { ConnectionState } from "livekit-client";
-import { api, ApiError } from "@/src/@libs/api/client";
-import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
-import { ROOM_ID_PATTERN } from "@/src/@modules/auth/libs/return-path";
-import { useMeetingConnection } from "@/src/@modules/livekit/useMeetingConnection";
-import EndMeetingControl from "./EndMeetingControl";
-import CopyInviteButton from "./CopyInviteButton";
-import ConnectedMeeting from "./ConnectedMeeting";
-import PreJoin from "./PreJoin";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import type { Meeting } from "../types";
+import ConnectedMeeting from "./ConnectedMeeting";
+import CopyInviteButton from "./CopyInviteButton";
+import EndMeetingControl from "./EndMeetingControl";
+import PreJoinCopy from "./updated/PreJoinCopy";
 
 export default function MeetingRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
@@ -97,26 +97,27 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
     />
   ) : null;
   if (terminal)
-    return (
-      <section className="mx-auto max-w-7xl p-4">
-        {endControl}
-        <h1 className="text-2xl font-bold">
-          {terminal === "ended"
-            ? "This meeting has ended"
-            : "This meeting is ending"}
-        </h1>
-        <p className="my-4">You can no longer join using this meeting link.</p>
-        {terminal === "ending" && (
-          <p>
-            Shutdown has not yet been confirmed. The host can retry ending the
-            meeting.
-          </p>
-        )}
-        <Link href="/dashboard" className="underline">
-          Return to dashboard
-        </Link>
-      </section>
-    );
+    router.push('/')
+    // return (
+    //   <section className="mx-auto max-w-7xl p-4">
+    //     {endControl}
+    //     <h1 className="text-2xl font-bold">
+    //       {terminal === "ended"
+    //         ? "This meeting has ended"
+    //         : "This meeting is ending"}
+    //     </h1>
+    //     <p className="my-4">You can no longer join using this meeting link.</p>
+    //     {terminal === "ending" && (
+    //       <p>
+    //         Shutdown has not yet been confirmed. The host can retry ending the
+    //         meeting.
+    //       </p>
+    //     )}
+    //     <Link href="/dashboard" className="underline">
+    //       Return to dashboard
+    //     </Link>
+    //   </section>
+    // );
   if (error)
     return (
       <section className="p-6">
@@ -150,9 +151,9 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">{meeting.title}</h1>
-          <p className="mt-1 text-sm text-slate-300">
+          {/* <p className="mt-1 text-sm text-slate-300">
             Up to {meeting.maxParticipants} participants
-          </p>
+          </p> */}
         </div>
         <CopyInviteButton roomId={meeting.roomId} />
       </header>
@@ -196,21 +197,27 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
         </RoomContext.Provider>
       ) : (
         <>
-          <PreJoin
+          {/* <PreJoin
+            name={user?.displayName ?? ""}
+            host={meeting.hostUserId === user?.id}
+            joining={connection.joining}
+            onJoin={connection.join}
+          /> */}
+          <PreJoinCopy
             name={user?.displayName ?? ""}
             host={meeting.hostUserId === user?.id}
             joining={connection.joining}
             onJoin={connection.join}
           />
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="mt-4 flex md:flex-wrap items-center gap-3">
             <button
               disabled={leaving}
               onClick={() => void leave()}
-              className="rounded border p-3"
+              className="rounded border px-1 py-2 md:p-3 cursor-pointer"
             >
               Leave meeting
             </button>
-            <div ref={setEndControlSlot} className="contents"  />
+            <div ref={setEndControlSlot} className="contents" />
           </div>
         </>
       )}

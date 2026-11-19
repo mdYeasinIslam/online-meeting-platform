@@ -26,7 +26,7 @@ export default function EmailPasswordPageCopy({
 
   setTimeout(() => {
     setError(""); // Clear the error after 2 seconds
-  }, 4000);
+  }, 8000);
   // ZenUI Interactive States
   const [showPassword, setShowPassword] = useState(false);
 
