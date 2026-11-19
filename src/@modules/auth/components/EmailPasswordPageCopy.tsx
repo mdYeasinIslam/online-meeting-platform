@@ -75,6 +75,10 @@ export default function EmailPasswordPageCopy({
     }
   }
 
+  const googleAuth = () => {
+    window.location.href = `${API_BASE_URL}/auth/google?next=${encodeURIComponent(next)}`;
+    router.replace(next);
+  };
   const inputClasses =
     "mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-xs outline-none transition-colors focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-teal-500";
 
@@ -115,8 +119,9 @@ export default function EmailPasswordPageCopy({
         {google && (
           <>
             <div className="mt-2">
-              <Link
-                href={`${API_BASE_URL}/auth/google?next=${encodeURIComponent(next)}`}
+              <button
+                onClick={googleAuth}
+                // href={`${API_BASE_URL}/auth/google?next=${encodeURIComponent(next)}`}
                 className="inline-flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 shadow-xs outline-none transition-colors hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-teal-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800/80"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
@@ -138,7 +143,7 @@ export default function EmailPasswordPageCopy({
                   />
                 </svg>
                 Continue with Google
-              </Link>
+              </button>
             </div>
 
             <div className="my-2 flex items-center gap-3 text-xs text-slate-800 dark:text-slate-300">
