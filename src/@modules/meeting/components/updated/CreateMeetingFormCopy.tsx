@@ -4,8 +4,16 @@ import { useRouter } from "next/navigation";
 import { api } from "@/src/@libs/api/client";
 import { Meeting } from "../../types";
 import { Divider } from "antd";
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
+import { useMeetingConnection } from "@/src/@modules/livekit/useMeetingConnection";
 export default function CreateMeetingFormCopy() {
   const router = useRouter();
+  const [roomId] = useGlobalState<string | null>({
+    key: "roomId",
+    initialValue: null,
+  });
+  const connection = useMeetingConnection(roomId ?? "");
+  
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   //   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -43,14 +51,13 @@ export default function CreateMeetingFormCopy() {
       setBusy(false);
     }
   }
+  if (!roomId) return null;
   return (
     <div className="relative w-fit">
       <div
         role="menu"
         className="absolute  left-0 top-full z-30 mt- min-w-full overflow-hidden rounded-xl bg-white text-sm shadow-xl"
       >
-
-        
         <button
           //   href="/meeting/create"
           role="menuitem"

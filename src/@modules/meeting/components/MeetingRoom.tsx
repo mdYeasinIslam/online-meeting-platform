@@ -17,6 +17,7 @@ import CopyInviteButton from "./CopyInviteButton";
 import ConnectedMeeting from "./ConnectedMeeting";
 import PreJoin from "./PreJoin";
 import type { Meeting } from "../types";
+import PreJoinCopy from "./updated/PreJoinCopy";
 
 export default function MeetingRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
@@ -150,9 +151,9 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">{meeting.title}</h1>
-          <p className="mt-1 text-sm text-slate-300">
+          {/* <p className="mt-1 text-sm text-slate-300">
             Up to {meeting.maxParticipants} participants
-          </p>
+          </p> */}
         </div>
         <CopyInviteButton roomId={meeting.roomId} />
       </header>
@@ -196,7 +197,13 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
         </RoomContext.Provider>
       ) : (
         <>
-          <PreJoin
+          {/* <PreJoin
+            name={user?.displayName ?? ""}
+            host={meeting.hostUserId === user?.id}
+            joining={connection.joining}
+            onJoin={connection.join}
+          /> */}
+          <PreJoinCopy
             name={user?.displayName ?? ""}
             host={meeting.hostUserId === user?.id}
             joining={connection.joining}
@@ -210,7 +217,7 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
             >
               Leave meeting
             </button>
-            <div ref={setEndControlSlot} className="contents"  />
+            <div ref={setEndControlSlot} className="contents" />
           </div>
         </>
       )}
