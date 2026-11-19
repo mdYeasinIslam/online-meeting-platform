@@ -44,8 +44,7 @@ export default function JoinRequestPanelCopy({ roomId }: { roomId: string }) {
   }, [roomId, refresh]);
   async function decide(requestId: string, decision: "accept" | "reject") {
     if (decision === "reject") setIsRejecting(true);
-    else
-    setIsAccepting(true);
+    else setIsAccepting(true);
     try {
       await meetingApprovalRequestCopy(
         roomId,
@@ -54,8 +53,7 @@ export default function JoinRequestPanelCopy({ roomId }: { roomId: string }) {
       );
       await refresh();
       if (decision === "reject") setIsRejecting(false);
-      else
-      setIsAccepting(false);
+      else setIsAccepting(false);
     } catch (failure) {
       setError(
         failure instanceof Error
@@ -64,9 +62,10 @@ export default function JoinRequestPanelCopy({ roomId }: { roomId: string }) {
       );
     }
   }
+  if (!requests.length && !error) return null;
   return (
     <section
-      aria-label="Waiting room"
+      aria-label=" Waiting room"
       className="mb-3 rounded-2xl border border-white/10 bg-slate-900/90 p-4"
     >
       <div className="flex items-center justify-between">
