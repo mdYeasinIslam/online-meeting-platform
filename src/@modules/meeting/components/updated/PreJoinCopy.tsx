@@ -224,11 +224,11 @@ export default function PreJoinCopy({
     .toUpperCase();
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-2xl">
-      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-2 md:p-6 shadow-2xl">
+      <div className="grid grid-cols-1 items-center gap-4 md:gap-8 lg:grid-cols-12">
         {/* Left Column: Google Meet-style Camera Preview Card */}
         <div className="lg:col-span-7">
-          <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-inner">
+          <div className="relative aspect-auto md:aspect-video  w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-inner">
             {/* Mirrored Live Video Preview */}
             <video
               ref={videoRef}
@@ -255,21 +255,21 @@ export default function PreJoinCopy({
                     <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-2xl font-bold text-slate-200">
                       {initials || <User className="h-8 w-8" />}
                     </div>
-                    <p className="text-sm font-medium text-slate-300">
+                    {/* <p className="text-sm font-medium text-slate-300">
                       Camera is off
-                    </p>
+                    </p> */}
                   </>
                 )}
               </div>
             )}
 
             {/* Top-left Name Badge */}
-            <div className="absolute left-3 top-3 rounded-lg bg-black/60 px-3 py-1 text-xs font-medium text-slate-200 backdrop-blur-sm">
+            <div className="absolute left-2 md:left-3 top-3 rounded-lg bg-black/60 px-3 py-1 text-xs font-medium text-slate-200 backdrop-blur-sm">
               {name || "Participant"} (You){host && " · Host"}
             </div>
 
             {/* Bottom-left Live Mic Level Indicator */}
-            <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 backdrop-blur-sm">
+            <div className="absolute bottom-1 md:bottom-4 left-2 md:left-4 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 backdrop-blur-sm">
               {microphone ? (
                 <Mic className="h-3.5 w-3.5 text-emerald-400" />
               ) : (
@@ -284,7 +284,7 @@ export default function PreJoinCopy({
             </div>
 
             {/* Bottom-center Circular Media Controls (Google Meet style) */}
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3">
+            <div className="absolute bottom-1 md:bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3">
               <button
                 type="button"
                 disabled={joining}
@@ -292,16 +292,16 @@ export default function PreJoinCopy({
                 aria-label={
                   microphone ? "Turn off microphone" : "Turn on microphone"
                 }
-                className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 ${
+                className={`flex h-7 w-7 md:h-11 md:w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 ${
                   microphone
                     ? "border-slate-600 bg-slate-800/90 text-white hover:bg-slate-700"
                     : "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
                 }`}
               >
                 {microphone ? (
-                  <Mic className="h-5 w-5" />
+                  <Mic className="h-4 w-4 md:h-5 md:w-5" />
                 ) : (
-                  <MicOff className="h-5 w-5" />
+                  <MicOff className="h-4 w-4 md:h-5 md:w-5" />
                 )}
               </button>
 
@@ -310,23 +310,23 @@ export default function PreJoinCopy({
                 disabled={joining}
                 onClick={handleToggleCamera}
                 aria-label={camera ? "Turn off camera" : "Turn on camera"}
-                className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 ${
+                className={`flex h-7 w-7 md:h-11 md:w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 ${
                   camera
                     ? "border-slate-600 bg-slate-800/90 text-white hover:bg-slate-700"
                     : "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
                 }`}
               >
                 {camera ? (
-                  <Video className="h-5 w-5" />
+                  <Video className="h-4 w-4 md:h-5 md:w-5" />
                 ) : (
-                  <VideoOff className="h-5 w-5" />
+                  <VideoOff className="h-4 w-4 md:h-5 md:w-5" />
                 )}
               </button>
             </div>
           </div>
 
           {/* Device Selectors Row */}
-          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-3 grid grid-cols-1 gap-0.5 md:gap-3 sm:grid-cols-2">
             <label className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-xs text-slate-300">
               <Mic className="h-4 w-4 shrink-0 text-slate-400" />
               <select
@@ -407,7 +407,7 @@ export default function PreJoinCopy({
                 type="checkbox"
                 checked={microphone}
                 onChange={handleToggleMicrophone}
-                className="h-4 w-4 rounded border-slate-600 accent-blue-600 cursor-pointer"
+                className="h-4 w-4 rounded border-slate-600 accent-(--color-primary-500) cursor-pointer"
               />
               Microphone on when joining
             </label>
@@ -416,7 +416,7 @@ export default function PreJoinCopy({
                 type="checkbox"
                 checked={camera}
                 onChange={handleToggleCamera}
-                className="h-4 w-4 rounded border-slate-600 accent-blue-600 cursor-pointer"
+                className="h-4 w-4 rounded border-slate-600 accent-(--color-primary-500) cursor-pointer"
               />
               Camera on when joining
             </label>
@@ -426,10 +426,10 @@ export default function PreJoinCopy({
             type="button"
             disabled={joining}
             onClick={() => void handleJoinClick()}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition-colors hover:bg-blue-500 disabled:opacity-50 cursor-pointer"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-(--color-primary-500) px-6 py-3 text- font-semibold text-white shadow-lg shadow-blue-900/30 transition-colors hover:bg-(--color-primary-800) disabled:opacity-50 cursor-pointer"
           >
             {joining && <Loader2 className="h-4 w-4 animate-spin" />}
-            {joining ? "Joining meeting…" : "Join meeting"}
+            {joining ? "Joining meeting…" : "Join Meeting"}
           </button>
         </div>
       </div>

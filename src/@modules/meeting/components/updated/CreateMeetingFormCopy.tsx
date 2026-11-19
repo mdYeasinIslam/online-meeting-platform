@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Meeting } from "../../types";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
 import toast from "react-hot-toast";
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
 export default function CreateMeetingFormCopy() {
   const router = useRouter();
     const { user, logout } = useAuth();
@@ -17,6 +18,13 @@ export default function CreateMeetingFormCopy() {
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+
+  const [,setIsBusy] = useGlobalState<boolean | null>({
+    key: "isBusy",
+    initialValue: false,
+  });
+  // const connection = useMeetingConnection(roomId ?? "");
   //   async function submit(event: FormEvent<HTMLFormElement>) {
   //     event.preventDefault();
   //     setBusy(true);
@@ -42,9 +50,11 @@ export default function CreateMeetingFormCopy() {
       toast.error("User not authenticated. Please log in.");
       return;
     }
+    setIsBusy(true);
     setBusy(true);
     setError("");
     try {
+   
       const result = await api<{ meeting: Meeting }>("/meetings", {
         method: "POST",
       });
@@ -55,11 +65,13 @@ export default function CreateMeetingFormCopy() {
       );
     } finally {
       setBusy(false);
+      setIsBusy(false);
     }
   }
   // if (!roomId) return null;
   return (
     <div className="relative w-fit">
+     
       <div
         role="menu"
         className="absolute  left-0 top-full z-30 mt- min-w-full overflow-hidden rounded-xl bg-white text-sm shadow-xl"
@@ -70,7 +82,7 @@ export default function CreateMeetingFormCopy() {
           onClick={submit}
           className="w-full block whitespace-nowrap rounded-lg px-4 py-3 font-semibold text-slate-700 transition hover:bg-(--color-primary-400)/20 hover:text-(--color-primary-500) cursor-pointer"
         >
-          Create Instant Meeting
+         {  busy ? "Creating…" : "Create Instant Meeting"} 
         </button>
         <Divider className="py-[0.1px] bg-black" />
         <button

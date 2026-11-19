@@ -86,13 +86,10 @@ export default function MeetingControlsCopy({
           onClick={() => void toggle("Microphone")}
           className={`flex h-12 w-12 items-center justify-center rounded-full transition-colors disabled:opacity-50 ${isMicrophoneEnabled ? "bg-[#3c4048] hover:bg-[#4a4e57]" : "bg-red-700 hover:bg-red-600"}`}
         >
-          {pending ? (
+          {/* {pending && (
             <LoaderCircle size={21} className="animate-spin" />
-          ) : isMicrophoneEnabled ? (
-            <Mic size={21} />
-          ) : (
-            <MicOff size={21} />
-          )}
+          )} */}
+          {isMicrophoneEnabled ? <Mic size={21} /> : <MicOff size={21} />}
         </button>
         <button
           title={isCameraEnabled ? "Turn camera off" : "Turn camera on"}

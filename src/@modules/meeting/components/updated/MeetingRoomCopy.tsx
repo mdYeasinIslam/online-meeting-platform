@@ -406,7 +406,7 @@ export default function MeetingRoomCopy({ roomId }: { roomId: string }) {
   return (
     <section className="fixed inset-0 z-40 flex flex-col overflow-hidden bg-[#11131a] px-3 pb-3 pt-2 text-white sm:px-5 sm:pt-3">
       {endControl}
-      <header className="mb-3 flex shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-3">
+      <header className="mb-3  flex shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-3">
         <div className="min-w-0">
           <h1 className="truncate text-lg font-semibold sm:text-xl">
             {meeting.title}
@@ -614,11 +614,11 @@ export default function MeetingRoomCopy({ roomId }: { roomId: string }) {
                 {joinMessage}
               </p>
             )}
-          <div className="mt-4 flex md:flex-wrap justify-between items-center gap-3">
+          <div className="mt-4 flex md:flex-wrap justify-end items-center gap-3">
             <button
               disabled={leaving}
               onClick={() => void leave()}
-              className="rounded border p-2 md:p-3 cursor-pointer"
+              className="rounded-xl border-2 border-red-700 hover:bg-red-950 p-2 md:p-3 cursor-pointer"
             >
               Leave meeting
             </button>

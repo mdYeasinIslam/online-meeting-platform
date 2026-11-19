@@ -17,7 +17,7 @@ export default function ParticipantTileCopy({ trackRef, hostUserId }: { trackRef
       data-participant={identity}
       data-local={participant.isLocal}
       aria-label={`${displayName}${participant.isLocal ? " (you)" : ""}`}
-      className="group relative h-full min-h-36 overflow-hidden rounded-2xl border border-white/10 bg-[#20232b] shadow-lg transition-[border-color,transform] duration-200 hover:border-white/25"
+      className="group relative h-full aspect-auto min-h-36 overflow-hidden rounded-2xl border border-white/10 bg-[#20232b] shadow-lg transition-[border-color,transform] duration-200 hover:border-white/25"
     >
       {videoAvailable && isTrackReference(trackRef) ? (
         <VideoTrack trackRef={trackRef} className="absolute inset-0 h-full w-full object-cover" />

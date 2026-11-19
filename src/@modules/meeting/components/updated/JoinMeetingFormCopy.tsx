@@ -9,6 +9,7 @@ import { parseMeetingInput } from "../../join-input";
 import { api, ApiError } from "@/src/@libs/api/client";
 import { useRouter } from "next/navigation";
 import { Meeting } from "../../types";
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
 
 export interface JoinMeetingFormCopyProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -42,6 +43,10 @@ const JoinMeetingFormCopy = ({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [signIn, setSignIn] = useState("");
+  const [,setIsBusy] = useGlobalState<boolean | null>({
+    key: "isBusy",
+    initialValue: false
+  });
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,6 +64,7 @@ const JoinMeetingFormCopy = ({
     const controller = new AbortController();
     request.current = controller;
     setBusy(true);
+    setIsBusy(true);
     try {
       const { meeting } = await api<{ meeting: Meeting }>(
         `/meetings/${parsed.roomId}`,
@@ -108,6 +114,7 @@ const JoinMeetingFormCopy = ({
       }
       request.current = null;
       setBusy(false);
+      setIsBusy(false);
     }
   };
 

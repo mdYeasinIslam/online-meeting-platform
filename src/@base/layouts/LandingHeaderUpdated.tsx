@@ -1,4 +1,5 @@
 "use client";
+import useGlobalState from "@/src/@libs/hooks/useGlobalState";
 import { cn } from "@/src/@libs/utils/cn";
 import AuthGuard from "@/src/@modules/auth/components/AuthGuard";
 import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
@@ -13,11 +14,15 @@ import {
   FaUsers as Users,
   FaVideo as Video,
 } from "react-icons/fa6";
+import { BaseLoader } from "../components/BaseLoader";
 export default function LandingHeaderUpdated() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
-
+  const [isBusy,] = useGlobalState<boolean | null>({
+    key: "isBusy",
+    initialValue: false,
+  });
   const { user, logout } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
@@ -49,6 +54,14 @@ export default function LandingHeaderUpdated() {
         pathname === "/auth" || pathname.includes("/meeting") ? "hidden" : "",
       )}
     >
+      {isBusy && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="relative z-10 rounded-xl bg-(--color-primary-900) px-6 py-4 text-lg font-semibold text-white shadow-xl">
+            <BaseLoader color="#3B9DF8" size={30} duration={1.5} />
+            {/* <span> Joining...</span>{" "} */}
+          </div>
+        </div>
+      )}
       <div className="flex items-center">
         <Image
           src="/logo.webp"
@@ -96,8 +109,8 @@ export default function LandingHeaderUpdated() {
             </button>
             {isCreateMenuOpen && (
               // <AuthGuard>
-                <CreateMeetingFormCopy />
-             // </AuthGuard>
+              <CreateMeetingFormCopy />
+              // </AuthGuard>
             )}
             {/* {isCreateMenuOpen && isOpenDropdown && (
               <AuthGuard>

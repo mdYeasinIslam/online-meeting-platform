@@ -65,7 +65,7 @@ export default function EndMeetingControlCopy({
       ref={trigger}
       title="End meeting for everyone"
       aria-label="End meeting for everyone"
-      className="flex items-center justify-center gap-2 rounded-full border border-red-500 bg-red-950 p-3 text-red-100 transition-colors hover:bg-red-900 cursor-pointer"
+      className="flex items-center justify-center gap-2 rounded-full border border-red-500 bg-red-950 p-3 text-red-100 font-semibold transition-colors hover:bg-red-900 cursor-pointer"
       onClick={() => {
         setError("");
         dialog.current?.showModal();
@@ -73,7 +73,7 @@ export default function EndMeetingControlCopy({
       }}
     >
       <Power size={19} aria-hidden="true" />
-      <span className="hidden text-sm sm:inline">End meeting for everyone</span>
+      <span className="hidden max-sm:text-sm sm:inline">End meeting for everyone</span>
     </button>
   ) : null;
   // Keep the dialog mounted while the connected controls disappear during shutdown.
