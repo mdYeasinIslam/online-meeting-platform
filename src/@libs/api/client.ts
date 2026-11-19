@@ -149,13 +149,13 @@ export async function api<T>(
     );
   } catch (error) {
     if (error instanceof ApiError) {
-      toast.error(error.message);
+      console.error(error.message);
       throw error;
     }
 
     if (options.signal?.aborted) throw error;
 
-    toast.error(
+    console.error(
       "Cannot reach the server. Check your connection and that the Express server is running.",
     );
     throw new ApiError(
