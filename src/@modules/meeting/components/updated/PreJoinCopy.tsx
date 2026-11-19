@@ -407,7 +407,7 @@ export default function PreJoinCopy({
                 type="checkbox"
                 checked={microphone}
                 onChange={handleToggleMicrophone}
-                className="h-4 w-4 rounded border-slate-600 accent-blue-600"
+                className="h-4 w-4 rounded border-slate-600 accent-blue-600 cursor-pointer"
               />
               Microphone on when joining
             </label>
@@ -416,7 +416,7 @@ export default function PreJoinCopy({
                 type="checkbox"
                 checked={camera}
                 onChange={handleToggleCamera}
-                className="h-4 w-4 rounded border-slate-600 accent-blue-600"
+                className="h-4 w-4 rounded border-slate-600 accent-blue-600 cursor-pointer"
               />
               Camera on when joining
             </label>
@@ -426,7 +426,7 @@ export default function PreJoinCopy({
             type="button"
             disabled={joining}
             onClick={() => void handleJoinClick()}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition-colors hover:bg-blue-500 disabled:opacity-50"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition-colors hover:bg-blue-500 disabled:opacity-50 cursor-pointer"
           >
             {joining && <Loader2 className="h-4 w-4 animate-spin" />}
             {joining ? "Joining meeting…" : "Join meeting"}
