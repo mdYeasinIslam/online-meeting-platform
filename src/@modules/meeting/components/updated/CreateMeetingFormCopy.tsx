@@ -4,8 +4,11 @@ import { Divider } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Meeting } from "../../types";
+import { useAuth } from "@/src/@modules/auth/context/AuthProvider";
+import toast from "react-hot-toast";
 export default function CreateMeetingFormCopy() {
   const router = useRouter();
+    const { user, logout } = useAuth();
   // const [roomId] = useGlobalState<string | null>({
   //   key: "roomId",
   //   initialValue: null,
@@ -34,6 +37,10 @@ export default function CreateMeetingFormCopy() {
   //     }
   //   }
   async function submit() {
+    if(!user) {
+      toast.error("User not authenticated. Please log in.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {

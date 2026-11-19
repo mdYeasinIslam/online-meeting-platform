@@ -7,7 +7,7 @@ import JoinMeetingFormCopy from "@/src/@modules/meeting/components/updated/JoinM
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaArrowRight as ArrowRight,
   FaUsers as Users,
@@ -16,11 +16,18 @@ import {
 export default function LandingHeaderUpdated() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+
   const { user, logout } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [joinMeeting, setJoinMeeting] = useState("");
+
+  const createMenuFn = () => {
+    setIsCreateMenuOpen((isOpen) => !isOpen);
+    setIsOpenDropdown(true);
+  };
 
   const pathname = usePathname();
   async function signOut() {
@@ -80,19 +87,23 @@ export default function LandingHeaderUpdated() {
               type="button"
               aria-expanded={isCreateMenuOpen}
               aria-haspopup="menu"
-              onClick={() => setIsCreateMenuOpen((isOpen) => !isOpen)}
+              onClick={createMenuFn}
               className="max-md:w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-(--color-primary-800) px-4 py-2 font-bold text-white transition hover:-translate-y-0.5 hover:bg-(--color-primary-500) cursor-pointer!"
             >
               <Video size={21} />
               New
               {/* <ArrowRight size={19} /> */}
             </button>
-
             {isCreateMenuOpen && (
+              // <AuthGuard>
+                <CreateMeetingFormCopy />
+             // </AuthGuard>
+            )}
+            {/* {isCreateMenuOpen && isOpenDropdown && (
               <AuthGuard>
                 <CreateMeetingFormCopy />
               </AuthGuard>
-            )}
+            )} */}
           </div>
         </div>
         {/* <Link href="/dashboard" className="hover:underline">
@@ -120,7 +131,9 @@ export default function LandingHeaderUpdated() {
                 onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
                 className="flex w-6 h-6 md:h-8 md:w-8 items-center justify-center gap-2 rounded-full border bg-(--color-primary-500) cursor-pointer hover:bg-gray-600"
               >
-                <span className="font-bold">{user.displayName.slice(0, 1)}</span>
+                <span className="font-bold">
+                  {user.displayName.slice(0, 1)}
+                </span>
               </button>
               {isProfileMenuOpen && (
                 <div
