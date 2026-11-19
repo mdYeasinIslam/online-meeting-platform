@@ -210,7 +210,7 @@ export default function MeetingRoom({ roomId }: { roomId: string }) {
             >
               Leave meeting
             </button>
-            <div ref={setEndControlSlot} className="contents" />
+            <div ref={setEndControlSlot} className="contents"  />
           </div>
         </>
       )}

@@ -86,7 +86,7 @@ export default function EmailPasswordPageCopy({
           href="/"
           className="inline-flex items-center gap-2.5 rounded-lg font-semibold text-slate-900 outline-none focus-visible:ring-2 focus-visible:ring-teal-600 dark:text-white hover:underline"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600 text-white shadow-xs">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-(--color-primary-500) text-white shadow-xs">
             <HandMetal className="h-6 w-6" aria-hidden="true" />
           </span>
           <span className="text-lg tracking-tight">Let&apos;s Talk</span>
@@ -96,7 +96,7 @@ export default function EmailPasswordPageCopy({
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
           {register ? "Create an account" : "Sign in to your account"}
         </h1>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 ">
           {register ? "Already have an account?" : "New to Let's Talk BdSL?"}{" "}
           <button
             type="button"
@@ -105,7 +105,7 @@ export default function EmailPasswordPageCopy({
               setRegister(!register);
               setError("");
             }}
-            className="font-medium text-teal-700 underline-offset-4 hover:underline disabled:opacity-50 dark:text-teal-400"
+            className="font-medium text-white/90 underline-offset-4 hover:underline disabled:opacity-50 dark:text- cursor-pointer"
           >
             {register ? "Sign in" : "Create an account"}
           </button>
@@ -233,7 +233,7 @@ export default function EmailPasswordPageCopy({
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 aria-pressed={showPassword}
                 disabled={busy}
-                className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 outline-none transition-colors hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-teal-600 disabled:opacity-50 dark:hover:text-slate-200"
+                className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 outline-none transition-colors hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-teal-600 disabled:opacity-50 dark:hover:text-slate-200 cursor-pointer"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
@@ -248,7 +248,7 @@ export default function EmailPasswordPageCopy({
           <button
             type="submit"
             disabled={busy}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs outline-none transition-colors hover:bg-teal-700 focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 dark:focus-visible:ring-offset-slate-950"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-(--color-primary-500) px-4 py-2.5 text-sm font-semibold text-white shadow-xs outline-none transition-colors hover:bg-(--color-primary-800) focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 dark:focus-visible:ring-offset-slate-950 cursor-pointer"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
             {busy ? "Please wait…" : register ? "Create account" : "Sign in"}
