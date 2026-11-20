@@ -19,7 +19,7 @@ export default function LandingHeaderUpdated() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
-  const [isBusy,] = useGlobalState<boolean | null>({
+  const [isBusy] = useGlobalState<boolean | null>({
     key: "isBusy",
     initialValue: false,
   });
@@ -151,7 +151,7 @@ export default function LandingHeaderUpdated() {
               {isProfileMenuOpen && (
                 <div
                   role="menu"
-                  className="absolute left-0 z-10 pt-2  min-w-32 rounded-xl border border-slate-700 bg-slate-900 p-2 shadow-lg"
+                  className="absolute left-0 pt- z-20  min-w-32 rounded-xl border border-slate-700 bg-slate-900 p-2 shadow-lg"
                 >
                   <Link
                     href="/profile"
@@ -168,6 +168,18 @@ export default function LandingHeaderUpdated() {
                     className="block rounded-lg px-3 py-2 hover:bg-slate-800"
                   >
                     Dashboard
+                  </Link>
+                  <Link
+                    href="/sign-demo"
+                    className="block rounded-lg px-3 py-2 hover:bg-slate-800"
+                  >
+                    Alphabet demo
+                  </Link>
+                  <Link
+                    href="/research/data-collection"
+                    className="block rounded-lg px-3 py-2 hover:bg-slate-800"
+                  >
+                    Data collection
                   </Link>
                 </div>
               )}

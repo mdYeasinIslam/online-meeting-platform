@@ -145,7 +145,7 @@ const HeroSection = () => {
         </div>
 
         {/* Right visual */}
-        <div className="relative flex justify-center lg:justify-end z-10 ">
+        <div className="relative flex justify-center lg:justify-end ">
           {/* <VideoMeetingPreview /> */}
           {/* <Image
             src="/images/banner/hero1.jpeg"

@@ -12,6 +12,7 @@ import {
   User,
 } from "lucide-react";
 import type { MediaChoices } from "@/src/@modules/livekit/useMeetingConnection";
+import { cn } from "@/src/@libs/utils/cn";
 
 // Extended choices type so existing MediaChoices ({ microphone, camera }) remains 100% compatible
 export type PreJoinMediaChoices = MediaChoices & {
@@ -292,11 +293,15 @@ export default function PreJoinCopy({
                 aria-label={
                   microphone ? "Turn off microphone" : "Turn on microphone"
                 }
-                className={`flex h-7 w-7 md:h-11 md:w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 ${
-                  microphone
-                    ? "border-slate-600 bg-slate-800/90 text-white hover:bg-slate-700"
-                    : "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
-                }`}
+                className={cn(
+                  "flex h-7 w-7 md:h-11 md:w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 cursor-pointer",
+                  {
+                    "border-slate-600 bg-slate-800/90 text-white hover:bg-slate-700":
+                      microphone,
+                    "border-rose-500 bg-rose-600 text-white hover:bg-rose-500":
+                      !microphone,
+                  },
+                )}
               >
                 {microphone ? (
                   <Mic className="h-4 w-4 md:h-5 md:w-5" />
@@ -310,11 +315,15 @@ export default function PreJoinCopy({
                 disabled={joining}
                 onClick={handleToggleCamera}
                 aria-label={camera ? "Turn off camera" : "Turn on camera"}
-                className={`flex h-7 w-7 md:h-11 md:w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 ${
-                  camera
-                    ? "border-slate-600 bg-slate-800/90 text-white hover:bg-slate-700"
-                    : "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
-                }`}
+                className={cn(
+                  "flex h-7 w-7 md:h-11 md:w-11 items-center justify-center rounded-full border transition-colors disabled:opacity-50 cursor-pointer",
+                  {
+                    "border-slate-600 bg-slate-800/90 text-white hover:bg-slate-700":
+                      camera,
+                    "border-rose-500 bg-rose-600 text-white hover:bg-rose-500":
+                      !camera,
+                  },
+                )}
               >
                 {camera ? (
                   <Video className="h-4 w-4 md:h-5 md:w-5" />
@@ -401,8 +410,8 @@ export default function PreJoinCopy({
           )}
 
           {/* Preserved Accessible Fieldset Checkboxes (synced with video icons) */}
-          <fieldset disabled={joining} className="mt-5 space-y-2.5">
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-200">
+          <fieldset disabled={joining} className="mt-5 flex flex-col gap-2">
+            <label className="inline-flex w-fit cursor-pointer items-center gap-2.5 text-sm text-slate-200">
               <input
                 type="checkbox"
                 checked={microphone}
@@ -411,7 +420,7 @@ export default function PreJoinCopy({
               />
               Microphone on when joining
             </label>
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-200">
+            <label className="inline-flex w-fit cursor-pointer items-center gap-2.5 text-sm text-slate-200">
               <input
                 type="checkbox"
                 checked={camera}
