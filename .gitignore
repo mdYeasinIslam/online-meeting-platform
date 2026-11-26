@@ -3,6 +3,10 @@
 # dependencies
 /node_modules
 /docs
+mediapipe-hands-0.4.1675469240.tgz
+
+#model related
+/.venv-phrase
 
 
 /.pnp

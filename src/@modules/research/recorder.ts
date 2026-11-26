@@ -6,8 +6,8 @@ export interface CaptureMetadata {
   label: VocabularyLabel; consentAt: string; width: number; height: number;
 }
 export type RecordingState = { phase: "idle" | "countdown" | "recording" | "review"; remainingMs: number; frames: number; sample: TemporalSample | null };
-interface Clock { now: () => number; date: () => number; id: () => string; schedule: (fn: () => void) => ReturnType<typeof setTimeout>; cancel: (id: ReturnType<typeof setTimeout>) => void; }
-const defaultClock: Clock = { now: () => performance.now(), date: () => Date.now(), id: () => crypto.randomUUID(), schedule: fn => setTimeout(fn, C.recorderTickMs), cancel: id => clearTimeout(id) };
+export interface RecordingClock { now: () => number; date: () => number; id: () => string; schedule: (fn: () => void) => ReturnType<typeof setTimeout>; cancel: (id: ReturnType<typeof setTimeout>) => void; }
+export const recordingClock: RecordingClock = { now: () => performance.now(), date: () => Date.now(), id: () => crypto.randomUUID(), schedule: fn => setTimeout(fn, C.recorderTickMs), cancel: id => clearTimeout(id) };
 export class TemporalRecorder {
   private state: RecordingState = { phase: "idle", remainingMs: 0, frames: 0, sample: null };
   private metadata?: CaptureMetadata;
@@ -18,8 +18,8 @@ export class TemporalRecorder {
   private timer?: ReturnType<typeof setTimeout>;
   private disposed = false;
   private emit: (state: RecordingState) => void;
-  private clock: Clock;
-  constructor(emit: (state: RecordingState) => void, clock: Clock = defaultClock) { this.emit = emit; this.clock = clock; }
+  private clock: RecordingClock;
+  constructor(emit: (state: RecordingState) => void, clock: RecordingClock = recordingClock) { this.emit = emit; this.clock = clock; }
   get snapshot() { return this.state; }
   start(metadata: CaptureMetadata, ready: boolean) {
     if (this.disposed || this.state.phase !== "idle") throw new Error("Finish or discard the current take first.");
