@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "kind": "bdsl-phrase-vocabulary",
+  "version": "bdsl-phrase-v3-pilot-v1",
+  "reviewStatus": "provisional",
+  "notes": "Pilot collection only. Definitions and signing variants have not received expert review. Unknown is negative gesture data, not a BdSL phrase.",
+  "labels": [
+    { "index": 0, "id": "hello", "bangla": "হ্যালো", "english": "Hello", "category": "phrase", "handUsage": "unspecified" },
+    { "index": 1, "id": "good_morning", "bangla": "শুভ সকাল", "english": "Good Morning", "category": "phrase", "handUsage": "unspecified" },
+    { "index": 2, "id": "good_night", "bangla": "শুভরাত্রি", "english": "Good Night", "category": "phrase", "handUsage": "unspecified" },
+    { "index": 3, "id": "how_are_you", "bangla": "আপনি কেমন আছেন?", "english": "How are you?", "category": "phrase", "handUsage": "unspecified" },
+    { "index": 4, "id": "i_am_fine", "bangla": "আমি ভালো আছি", "english": "I am fine", "category": "phrase", "handUsage": "unspecified" },
+    { "index": 5, "id": "good_afternoon", "bangla": "শুভ অপরাহ্ণ", "english": "Good Afternoon", "category": "phrase", "handUsage": "unspecified" },
+    { "index": 6, "id": "unknown", "bangla": "অচেনা বা অসমর্থিত ইশারা", "english": "Unsupported gesture", "category": "negative-gesture", "handUsage": "variable" }
+  ]
+}

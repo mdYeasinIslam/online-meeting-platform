@@ -1,0 +1,804 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BdSL phrase training dataset v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kind",
+    "preprocessingVersion",
+    "inputShape",
+    "vocabularyVersion",
+    "vocabularyReviewStatus",
+    "labels",
+    "labelIds",
+    "samples"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "bdsl-phrase-training"
+    },
+    "preprocessingVersion": {
+      "const": "phrase-frame-index-v1"
+    },
+    "inputShape": {
+      "const": [
+        32,
+        128
+      ]
+    },
+    "vocabularyVersion": {
+      "const": "bdsl-phrase-v3-pilot-v1"
+    },
+    "vocabularyReviewStatus": {
+      "const": "provisional"
+    },
+    "labels": {
+      "const": {
+        "0": "হ্যালো",
+        "1": "শুভ সকাল",
+        "2": "শুভরাত্রি",
+        "3": "আপনি কেমন আছেন?",
+        "4": "আমি ভালো আছি",
+        "5": "শুভ অপরাহ্ণ",
+        "6": "অচেনা বা অসমর্থিত ইশারা"
+      }
+    },
+    "labelIds": {
+      "const": {
+        "0": "hello",
+        "1": "good_morning",
+        "2": "good_night",
+        "3": "how_are_you",
+        "4": "i_am_fine",
+        "5": "good_afternoon",
+        "6": "unknown"
+      }
+    },
+    "samples": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/sample"
+      }
+    }
+  },
+  "$comment": "The application additionally enforces float32 equality, label/index consistency, mask/coordinate consistency, timestamps, consent/acceptance chronology, raw-feature parity, recomputed quality, duplicate screening, and byte limits. No expert review is asserted.",
+  "$defs": {
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "participantId",
+        "sessionId",
+        "label",
+        "labelId",
+        "capturedAt",
+        "acceptedAt",
+        "durationMs",
+        "requestedDurationMs",
+        "countdownMs",
+        "stoppedBy",
+        "preprocessingVersion",
+        "vocabularyVersion",
+        "detector",
+        "orientation",
+        "consent",
+        "labelReview",
+        "quality",
+        "values",
+        "frames"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "participantId": {
+          "type": "string",
+          "pattern": "^P[0-9]{3,6}$"
+        },
+        "sessionId": {
+          "type": "string",
+          "pattern": "^S[0-9]{3,8}$"
+        },
+        "label": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "labelId": {
+          "enum": [
+            "hello",
+            "good_morning",
+            "good_night",
+            "how_are_you",
+            "i_am_fine",
+            "good_afternoon",
+            "unknown"
+          ]
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "acceptedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "durationMs": {
+          "type": "number",
+          "minimum": 2000,
+          "maximum": 8000
+        },
+        "requestedDurationMs": {
+          "enum": [
+            4000,
+            6000,
+            8000
+          ]
+        },
+        "countdownMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "stoppedBy": {
+          "enum": [
+            "manual",
+            "duration"
+          ]
+        },
+        "preprocessingVersion": {
+          "const": "phrase-frame-index-v1"
+        },
+        "vocabularyVersion": {
+          "const": "bdsl-phrase-v3-pilot-v1"
+        },
+        "detector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "version",
+            "selfieMode",
+            "maxNumHands",
+            "modelComplexity",
+            "minDetectionConfidence",
+            "minTrackingConfidence",
+            "handednessConfidence",
+            "targetFps"
+          ],
+          "properties": {
+            "name": {
+              "const": "@mediapipe/hands"
+            },
+            "version": {
+              "const": "0.4.1675469240"
+            },
+            "selfieMode": {
+              "const": false
+            },
+            "maxNumHands": {
+              "const": 2
+            },
+            "modelComplexity": {
+              "const": 1
+            },
+            "minDetectionConfidence": {
+              "const": 0.7
+            },
+            "minTrackingConfidence": {
+              "const": 0.7
+            },
+            "handednessConfidence": {
+              "const": 0.8
+            },
+            "targetFps": {
+              "const": 15
+            }
+          }
+        },
+        "orientation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inputMirrored",
+            "previewMirrored",
+            "handedness",
+            "width",
+            "height"
+          ],
+          "properties": {
+            "inputMirrored": {
+              "const": false
+            },
+            "previewMirrored": {
+              "const": true
+            },
+            "handedness": {
+              "const": "swap-unmirrored"
+            },
+            "width": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8192
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8192
+            }
+          }
+        },
+        "consent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "confirmed",
+            "protocolVersion",
+            "confirmedAt"
+          ],
+          "properties": {
+            "confirmed": {
+              "const": true
+            },
+            "protocolVersion": {
+              "const": "phrase-pilot-consent-v1"
+            },
+            "confirmedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "labelReview": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "pilotAcknowledged"
+          ],
+          "properties": {
+            "status": {
+              "const": "provisional"
+            },
+            "pilotAcknowledged": {
+              "const": true
+            }
+          }
+        },
+        "quality": {
+          "$ref": "#/$defs/quality"
+        },
+        "values": {
+          "type": "array",
+          "minItems": 32,
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/featureRow"
+          }
+        },
+        "frames": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 900,
+          "items": {
+            "$ref": "#/$defs/frame"
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "frameCount",
+        "validFrames",
+        "missingRatio",
+        "effectiveFps",
+        "maxGapMs",
+        "reasons"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "accepted",
+            "warning"
+          ]
+        },
+        "frameCount": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 900
+        },
+        "validFrames": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 900
+        },
+        "missingRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.4
+        },
+        "effectiveFps": {
+          "type": "number",
+          "minimum": 1
+        },
+        "maxGapMs": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 8000
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "featureRow": {
+      "type": "array",
+      "minItems": 128,
+      "maxItems": 128,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "enum": [
+            0,
+            1
+          ]
+        },
+        {
+          "enum": [
+            0,
+            1
+          ]
+        }
+      ],
+      "items": false
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      }
+    },
+    "hand": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "minItems": 21,
+          "maxItems": 21,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        }
+      ]
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timestamp",
+        "hands"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 8000
+        },
+        "hands": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/hand"
+          }
+        }
+      }
+    }
+  }
+}

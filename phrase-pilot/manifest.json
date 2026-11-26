@@ -1,0 +1,47 @@
+[
+  {
+    "id": "hello",
+    "bangla": "হ্যালো",
+    "english": "Hello",
+    "start": 6.7,
+    "end": 9.1,
+    "clip": "clips/hello.mp4",
+    "signer": "source-01"
+  },
+  {
+    "id": "good_morning",
+    "bangla": "শুভ সকাল",
+    "english": "Good Morning",
+    "start": 10.7,
+    "end": 15.7,
+    "clip": "clips/good_morning.mp4",
+    "signer": "source-01"
+  },
+  {
+    "id": "good_night",
+    "bangla": "শুভরাত্রি",
+    "english": "Good Night",
+    "start": 24,
+    "end": 28,
+    "clip": "clips/good_night.mp4",
+    "signer": "source-01"
+  },
+  {
+    "id": "how_are_you",
+    "bangla": "আপনি কেমন আছেন?",
+    "english": "How are you?",
+    "start": 30,
+    "end": 35.7,
+    "clip": "clips/how_are_you.mp4",
+    "signer": "source-01"
+  },
+  {
+    "id": "i_am_fine",
+    "bangla": "আমি ভালো আছি",
+    "english": "I am fine",
+    "start": 38,
+    "end": 42.5,
+    "clip": "clips/i_am_fine.mp4",
+    "signer": "source-01"
+  }
+]
